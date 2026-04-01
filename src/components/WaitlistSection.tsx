@@ -96,7 +96,7 @@ const WaitlistSection = () => {
               {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             </button>
           </form>
-          <button
+          {/*<button
             type="button"
             onClick={handleGoogleSignIn}
             className="w-full inline-flex items-center justify-center gap-2 bg-white text-slate-900 border border-slate-200 hover:bg-slate-50 font-semibold px-6 py-4 rounded-lg transition-all font-body text-sm"
@@ -110,7 +110,7 @@ const WaitlistSection = () => {
               </svg>
             </span>
             Sign in with Google
-          </button>
+          </button> */}
 
           {/* Micro-stats for friction reduction */}
           <div className="flex items-center justify-center gap-3 mt-6 text-xs text-surface-dark-fg/40 font-body">
