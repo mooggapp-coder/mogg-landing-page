@@ -13,6 +13,15 @@ const FooterSection = () => (
       <img src={moggLogo} alt="MOGG" className="h-10" />
       <p className="text-xs text-muted-foreground font-body">© 2026 MOGG. All rights reserved.</p>
       <div className="flex items-center gap-5">
+        <a href="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium font-body">
+          About
+        </a>
+        <a href="/terms" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium font-body">
+          Terms of Service
+        </a>
+        <a href="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium font-body">
+          Privacy Policy
+        </a>
         {[
           { Icon: Instagram, href: "https://www.instagram.com/mogg_app?igsh=NWZlemxpNTNhNjlk", label: "Instagram" },
           { Icon: TikTokIcon, href: "https://www.tiktok.com/@moggapp?is_from_webapp=1&sender_device=pc", label: "TikTok" },
