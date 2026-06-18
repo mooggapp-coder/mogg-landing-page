@@ -112,11 +112,11 @@ const WaitlistSection = () => {
             Sign in with Google
           </button> */}
 
-          {/* Micro-stats for friction reduction */}
+          {/* Micro-stats for friction reduction .*/}
           <div className="flex items-center justify-center gap-3 mt-6 text-xs text-surface-dark-fg/40 font-body">
             <span>Free to join</span>
             <span className="w-1 h-1 rounded-full bg-surface-dark-fg/20" />
-            <span>No credit card</span>
+            <span>No credit card required</span>
             <span className="w-1 h-1 rounded-full bg-surface-dark-fg/20" />
             <span>Early access perks</span>
           </div>

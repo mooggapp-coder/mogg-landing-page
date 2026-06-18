@@ -22,6 +22,9 @@ const FooterSection = () => (
         <a href="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium font-body">
           Privacy Policy
         </a>
+        <a href="/support" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium font-body">
+          Support
+        </a>
         {[
           { Icon: Instagram, href: "https://www.instagram.com/mogg_app?igsh=NWZlemxpNTNhNjlk", label: "Instagram" },
           { Icon: TikTokIcon, href: "https://www.tiktok.com/@moggapp?is_from_webapp=1&sender_device=pc", label: "TikTok" },
