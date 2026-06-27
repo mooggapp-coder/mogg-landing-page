@@ -4,9 +4,9 @@ import legendBabystickly from "@/assets/legend-babystickly.jpg";
 import legendClavicular from "@/assets/legend-clavicular.webp";
 
 const legends = [
-  { name: "Giga Chad", score: 9.5, rank: 1, image: legendGigachad },
-  { name: "Baby Stickly", score: 8.0, rank: 2, image: legendBabystickly },
-  { name: "Clavicular", score: 7.8, rank: 3, image: legendClavicular },
+  { name: "Competitor One", score: 2480, rank: 1, image: legendGigachad },
+  { name: "Competitor Two", score: 2310, rank: 2, image: legendBabystickly },
+  { name: "Competitor Three", score: 2150, rank: 3, image: legendClavicular },
 ];
 
 const ChadRankSection = () => {
@@ -19,7 +19,7 @@ const ChadRankSection = () => {
           <h2
             className={`text-4xl md:text-6xl font-black font-display ${isVisible ? "animate-fade-in-up" : "opacity-0"}`}
           >
-            The Current <span className="text-primary">Legends</span>
+            Top <span className="text-primary">Competitors</span>
           </h2>
           <span
             className={`inline-flex items-center gap-1.5 bg-primary text-primary-foreground text-[11px] font-semibold px-2.5 py-1 rounded-full font-body ${isVisible ? "animate-fade-in-up" : "opacity-0"}`}
@@ -42,7 +42,7 @@ const ChadRankSection = () => {
             <span className="text-xs uppercase tracking-widest text-muted-foreground font-display">Rank</span>
             <span className="text-xs uppercase tracking-widest text-muted-foreground font-display"></span>
             <span className="text-xs uppercase tracking-widest text-muted-foreground font-display">Name</span>
-            <span className="text-xs uppercase tracking-widest text-muted-foreground font-display text-right">Score</span>
+            <span className="text-xs uppercase tracking-widest text-muted-foreground font-display text-right">Points</span>
           </div>
 
           {legends
@@ -75,7 +75,7 @@ const ChadRankSection = () => {
                   {legend.name}
                 </span>
                 <span className="text-lg md:text-xl font-semibold font-body text-right text-muted-foreground">
-                  {legend.score} / 10
+                  {legend.score.toLocaleString()} pts
                 </span>
               </div>
             ))}

@@ -3,7 +3,7 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 const HeroSection = () => {
   const { ref, isVisible } = useScrollAnimation();
 
-  const words = ["Mogg", "and", "Get", "Mogged"];
+  const words = ["Enter", "the", "Competition"];
 
   return (
     <section ref={ref} className="relative min-h-[85vh] flex items-center bg-background overflow-hidden">
@@ -26,7 +26,7 @@ const HeroSection = () => {
               <span key={i} className="inline-block overflow-hidden mr-[0.2em]">
                 <span
                   className={`inline-block ${isVisible ? "animate-word-slide-up" : "opacity-0"} ${
-                    word === "Mogg" || word === "Mogged" ? "text-primary" : "text-foreground"
+                    word === "Competition" ? "text-primary" : "text-foreground"
                   }`}
                   style={{ animationDelay: `${i * 80}ms` }}
                 >
@@ -40,7 +40,7 @@ const HeroSection = () => {
             className={`text-lg text-muted-foreground max-w-md mt-6 font-body ${isVisible ? "animate-fade-in-up" : "opacity-0"}`}
             style={{ animationDelay: "0.5s" }}
           >
-            The #1 looksmaxxing app
+            The #1 head-to-head competition arena
           </p>
 
           {/* Social proof stats */}

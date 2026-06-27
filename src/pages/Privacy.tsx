@@ -23,7 +23,7 @@ const Privacy = () => (
                       <ul className="list-inside list-disc space-y-2 pl-5">
                         <li>Account information: name, email address, username, and password</li>
                         <li>Profile information: age, gender (optional)</li>
-                        <li>Facial photos: images you upload for AI analysis and rating</li>
+                        <li>Photos: images you upload to participate in competitions</li>
                         <li>Payment information: processed securely via third-party payment providers (we do not store card details)</li>
                         <li>Communications: messages or feedback you send to us</li>
                       </ul>
@@ -52,7 +52,7 @@ const Privacy = () => (
                     <div>
                       <h3 className="text-lg font-semibold text-surface-dark-fg">2.1 How Your Photos Are Used</h3>
                       <ul className="list-inside list-disc space-y-2 pl-5">
-                        <li>Your photo is sent to our AI processing system solely to generate your aesthetic rating and analysis</li>
+                        <li>Your photo is sent to our AI processing system solely to generate your competition and ranking</li>
                         <li>Photos are processed in real time and are not permanently stored on our servers after analysis is complete</li>
                         <li>We do not use your photos to build or train AI models without your explicit, separate consent</li>
                         <li>We do not share, sell, or transfer your facial photos to any third party</li>
@@ -179,7 +179,7 @@ const Privacy = () => (
                   <p>Email: mooggapp@gmail.com</p>
                   <p>Instagram: @mogg_app</p>
                   <p className="mt-4 font-semibold">We are committed to resolving privacy concerns promptly and transparently.</p>
-                  <p className="mt-4 font-semibold">MOGG AND GET MOGGED — The #1 Looksmaxxing App</p>
+                  <p className="mt-4 font-semibold">MOGG — The Competition Arena</p>
                 </section>
               </div>
             </div>

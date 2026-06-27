@@ -4,25 +4,25 @@ const features = [
   {
     tag: "COMPETE",
     title: "Battles",
-    description: "Go head-to-head in high-stakes aesthetic battles",
+    description: "Go head-to-head in high-stakes competition match-ups",
     color: "#FF3B30",
     subs: [
-      "Celebrity Battle",
-      "Random User Battle — 1 vs random opponent",
-      "Direct Battle — challenge a specific person",
-      "Live Battle — real-time head-to-head",
-      "Squad Battle — team vs team",
+      "Featured Match-up",
+      "Random Match-up — 1 vs random opponent",
+      "Direct Challenge — challenge a specific competitor",
+      "Live Match-up — real-time head-to-head",
+      "Squad Match-up — team vs team",
     ],
     fullWidth: true,
   },
   {
-    tag: "GET RATED",
-    title: "Rating",
-    description: "Know exactly where you stand, from humans and AI",
+    tag: "GET RANKED",
+    title: "Ranking",
+    description: "Know exactly where you stand in the competition",
     color: "#FF9F0A",
     subs: [
-      "AI Rating — precision facial analysis",
-      "Community Rating — voted on by real users",
+      "Community Voting — ranked by real users",
+      "Head-to-head Results — based on match-up outcomes",
     ],
   },
   {
@@ -33,13 +33,13 @@ const features = [
     subs: [
       "Global Ranking — worldwide leaderboard",
       "Local Ranking — your city and region",
-      "Feature Ranking — ranked by specific traits (style, eyes, jawline, etc.)",
+      "Category Ranking — compete in different categories",
     ],
   },
   {
     tag: "CONNECT",
     title: "Community",
-    description: "The only looksmaxing community built around real competition and real results",
+    description: "A community built around real competition and real results",
     color: "#0A84FF",
     subs: [
       "Discuss, share, and learn from the top-ranked",
@@ -50,11 +50,11 @@ const features = [
   {
     tag: "IMPROVE",
     title: "Challenges & Journey",
-    description: "Compete, improve, and document your transformation publicly",
+    description: "Compete, improve, and track your progress over time",
     color: "#BF5AF2",
     subs: [
       "Join community challenges",
-      "Share your glow-up journey",
+      "Share your progress",
       "Track visible progress over time",
       "Get accountability from the community",
     ],
@@ -62,12 +62,12 @@ const features = [
   {
     tag: "ASCEND",
     title: "Personalized Ascension Plan",
-    description: "A custom roadmap built around your face, your goals, your level",
+    description: "A custom roadmap built around your goals and your level",
     color: "#FFD60A",
     subs: [
-      "Targeted by your weak areas from your rating",
-      "Updated as you improve and get re-rated",
-      "Covers skincare, fitness, style, and grooming",
+      "Targeted to help you climb the rankings",
+      "Updated as you improve and climb",
+      "Covers training, strategy, and consistency",
     ],
     fullWidth: true,
   },

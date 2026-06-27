@@ -83,7 +83,7 @@ const WaitlistSection = () => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com — we don't spam, we mogg"
+                placeholder="your@email.com — we don't spam"
                 className="w-full bg-transparent border border-surface-dark-fg/20 rounded-lg px-4 py-3 text-surface-dark-fg placeholder:text-surface-dark-fg/30 focus:outline-none focus:border-primary transition font-body"
               />
             </div>

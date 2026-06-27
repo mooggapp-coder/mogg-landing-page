@@ -8,42 +8,42 @@ const About = () => (
               <div className="space-y-3">
                 <p className="text-sm uppercase tracking-[0.4em] text-primary font-semibold font-body">MOGG APP</p>
                 <h1 className="text-4xl md:text-5xl font-black leading-tight tracking-tight font-display">About Us</h1>
-                <p className="text-sm text-surface-dark-fg/60 font-body">The Standard of Aesthetic Excellence</p>
+                <p className="text-sm text-surface-dark-fg/60 font-body">Where Competition Meets Community</p>
               </div>
 
               <div className="space-y-8 text-sm leading-7 text-surface-dark-fg/85 font-body">
                 <section className="space-y-4">
                   <h2 className="text-xl font-semibold text-surface-dark-fg">Our Vision</h2>
-                  <p>At MOGG, we believe that everyone has a peak aesthetic potential. We didn't just build an app; we built an ecosystem dedicated to the science of physical optimization. Our mission is to provide the tools, the data, and the community needed to help you understand, track, and achieve your most optimized self.</p>
+                  <p>At MOGG, we believe everyone can grow through competition. We didn't just build an app; we built an ecosystem dedicated to head-to-head match-ups, rankings, and community-driven results. Our mission is to provide the tools, the data, and the community needed to help you compete, track your progress, and climb the leaderboard.</p>
                 </section>
 
                 <section className="space-y-4">
                   <h2 className="text-xl font-semibold text-surface-dark-fg">What is MOGG?</h2>
-                  <p>MOGG is the world’s first integrated Aesthetic Arena and Optimization Hub. We combine state-of-the-art AI technology with a competitive social environment to create a transparent standard for human aesthetics.</p>
+                  <p>MOGG is an integrated Competition Arena and community platform. We combine match-up mechanics with a competitive social environment so you can see where you stand and push yourself higher.</p>
                 </section>
 
                 <section className="space-y-4">
                   <h2 className="text-xl font-semibold text-surface-dark-fg">The Three Pillars of MOGG</h2>
                   <div className="space-y-4">
                     <div>
-                      <h3 className="text-lg font-semibold text-surface-dark-fg">The Lab (Science-First)</h3>
-                      <p>Our AI-driven analysis breaks down facial harmony, bone structure, and dimorphic ratios. We replace guesswork with objective data, giving you a clear roadmap for improvement.</p>
+                      <h3 className="text-lg font-semibold text-surface-dark-fg">The Lab (Data-Driven)</h3>
+                      <p>Our platform tracks match-up outcomes, rankings, and performance over time. We replace guesswork with clear competition data, giving you a roadmap to climb the leaderboard.</p>
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-surface-dark-fg">The Arena (Fair Competition)</h3>
-                      <p>From celebrity battles to global user matchups, the Arena is where the standard is defined. Our synchronized comparison UI ensures every vote is based on precision and fair judgment.</p>
+                      <p>From featured match-ups to global user challenges, the Arena is where rankings are earned. Our synchronized comparison UI ensures every vote is based on fair, head-to-head judgment.</p>
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-surface-dark-fg">The Hub (Collective Growth)</h3>
-                      <p>Excellence isn't a solo journey. Our community feed and discussion spaces connect you with a global network of individuals dedicated to self-improvement, grooming, and aesthetic science.</p>
+                      <p>Excellence isn't a solo journey. Our community feed and discussion spaces connect you with a global network of competitors dedicated to improvement, strategy, and shared progress.</p>
                     </div>
                   </div>
                 </section>
 
                 <section className="space-y-4">
                   <h2 className="text-xl font-semibold text-surface-dark-fg">Why Join the Evolution?</h2>
-                  <p>In a world of filters and deception, MOGG stands for Objective Reality. Whether you are here to analyze your progress, compete in the global ranks, or learn from the elite, you are part of a movement that values discipline, optimization, and the pursuit of perfection.</p>
-                  <p className="font-semibold">“Don’t just watch the elite. Become one.”</p>
+                  <p>In a world of empty hype, MOGG stands for real competition. Whether you are here to track your progress, compete in the global ranks, or learn from top performers, you are part of a movement that values discipline, consistency, and the pursuit of the top spot.</p>
+                  <p className="font-semibold">“Don't just watch the leaders. Become one.”</p>
                 </section>
               </div>
             </div>
