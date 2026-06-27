@@ -8,6 +8,7 @@ const WaitlistSection = () => {
   const { ref, isVisible } = useScrollAnimation();
   const { toast } = useToast();
   const [email, setEmail] = useState("");
+  const [instagram, setInstagram] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -20,12 +21,20 @@ const WaitlistSection = () => {
       return;
     }
 
+    const trimmedInstagram = instagram.trim().replace(/^@+/, "");
+
     setIsSubmitting(true);
     try {
-      const { error } = await supabase.from("waitlist").insert([{ email: trimmedEmail }]);
+      const { error } = await supabase.from("waitlist").insert([
+        {
+          email: trimmedEmail,
+          instagram: trimmedInstagram || null,
+        },
+      ]);
       if (error) throw error;
       toast({ title: "You're on the waitlist", description: "Your email has been saved. We’ll reach out when Mogg launches." });
       setEmail("");
+      setInstagram("");
     } catch (error) {
       const message = error instanceof Error ? error.message : "Something went wrong. Please try again.";
       toast({ title: "Error", description: message, variant: "destructive" });
@@ -84,6 +93,19 @@ const WaitlistSection = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com — we don't spam"
+                className="w-full bg-transparent border border-surface-dark-fg/20 rounded-lg px-4 py-3 text-surface-dark-fg placeholder:text-surface-dark-fg/30 focus:outline-none focus:border-primary transition font-body"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold mb-2 text-surface-dark-fg/50 uppercase tracking-widest font-display">
+                Instagram username <span className="normal-case tracking-normal font-normal text-surface-dark-fg/40">(optional)</span>
+              </label>
+              <input
+                type="text"
+                value={instagram}
+                onChange={(e) => setInstagram(e.target.value)}
+                placeholder="@yourusername"
+                autoComplete="off"
                 className="w-full bg-transparent border border-surface-dark-fg/20 rounded-lg px-4 py-3 text-surface-dark-fg placeholder:text-surface-dark-fg/30 focus:outline-none focus:border-primary transition font-body"
               />
             </div>
