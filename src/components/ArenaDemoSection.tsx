@@ -176,35 +176,26 @@ const ArenaDemoSection = () => {
   return (
     <section
       ref={ref}
-      className="overflow-x-hidden bg-background py-12 lg:py-16"
+      className="overflow-x-hidden bg-background py-ds-4 lg:py-ds-5"
       aria-labelledby="arena-demo-heading"
     >
-      <div className="container mx-auto max-w-4xl px-6">
-        <div className="mb-8 text-center">
-          <p
-            className={cn(
-              "text-eyebrow mb-2",
-              isVisible ? "animate-fade-in" : "opacity-0",
-            )}
-          >
-            TRY IT
-          </p>
+      <div className="container mx-auto max-w-4xl px-ds-2 sm:px-ds-3">
+        <div className="mb-ds-4 text-left md:mb-ds-5">
           <h2
             id="arena-demo-heading"
             className={cn(
               "text-page-title text-primary leading-[0.85]",
               isVisible ? "animate-fade-in" : "opacity-0",
             )}
-            style={{ animationDelay: "40ms" }}
           >
             Who wins?
           </h2>
           <p
             className={cn(
-              "mt-3 text-meta",
+              "mt-ds-2 text-meta",
               isVisible ? "animate-fade-in" : "opacity-0",
             )}
-            style={{ animationDelay: "80ms" }}
+            style={{ animationDelay: "40ms" }}
           >
             Tap a competitor to cast your vote.
           </p>
@@ -213,28 +204,21 @@ const ArenaDemoSection = () => {
         {phase === "cta" ? (
           <div
             className={cn(
-              "mx-auto max-w-lg surface-card space-y-6 p-8 text-center",
+              "mx-auto max-w-lg surface-card space-y-ds-3 p-ds-4 text-center",
               "motion-safe:animate-fade-in",
             )}
           >
-            <h3 className="text-section text-foreground tracking-tight">
-              Not bad. Now enter for real.
+            <h3 className="text-section tracking-tight text-foreground">
+              Not bad. Now join for real.
             </h3>
-            <p className="text-body text-muted-foreground">
-              Create your account to compete, climb the world ranking, and see
-              where you stand.
-            </p>
-            <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center gap-ds-2">
               <Link
                 to="/signup"
-                className="inline-flex h-btn-primary min-h-btn-primary w-full sm:w-auto items-center justify-center rounded-md bg-primary px-8 text-base font-bold text-primary-foreground shadow-primary-glow transition-[transform,box-shadow] duration-150 hover:bg-primary/90 active:scale-[0.97] font-body motion-reduce:transition-none motion-reduce:active:scale-100"
+                className="inline-flex h-btn-primary min-h-btn-primary w-full items-center justify-center rounded-md bg-primary px-ds-4 text-base font-bold text-primary-foreground shadow-primary-glow transition-[transform,box-shadow] duration-150 hover:bg-primary/90 active:scale-[0.97] font-body sm:w-auto motion-reduce:transition-none motion-reduce:active:scale-100"
               >
                 Create Your Account
               </Link>
-              <Link
-                to="/login"
-                className="text-meta hover:text-foreground hover:underline"
-              >
+              <Link to="/login" className="text-meta hover:text-foreground hover:underline">
                 Already competing? Log in
               </Link>
             </div>

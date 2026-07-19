@@ -2,83 +2,70 @@ import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import legendGigachad from "@/assets/legend-gigachad.jpg";
 import legendBabystickly from "@/assets/legend-babystickly.jpg";
 import legendClavicular from "@/assets/legend-clavicular.webp";
+import { cn } from "@/lib/utils";
 
 const legends = [
-  { name: "Competitor One", score: 2480, rank: 1, image: legendGigachad },
-  { name: "Competitor Two", score: 2310, rank: 2, image: legendBabystickly },
-  { name: "Competitor Three", score: 2150, rank: 3, image: legendClavicular },
+  { name: "Competitor One", rank: 1, image: legendGigachad },
+  { name: "Competitor Two", rank: 2, image: legendBabystickly },
+  { name: "Competitor Three", rank: 3, image: legendClavicular },
 ];
 
 const ChadRankSection = () => {
   const { ref, isVisible } = useScrollAnimation();
 
   return (
-    <section ref={ref} className="py-12 lg:py-16 bg-background">
-      <div className="container mx-auto px-6 flex flex-col items-center">
-        <div className="flex flex-col items-center gap-4 mb-8 text-center">
-          <h2
-            className={`text-page-title ${isVisible ? "animate-fade-in" : "opacity-0"}`}
+    <section ref={ref} className="bg-background py-ds-4 lg:py-ds-5">
+      <div className="container mx-auto px-ds-2 sm:px-ds-3">
+        <div className="grid grid-cols-1 items-start gap-ds-4 md:grid-cols-[minmax(0,0.6fr)_minmax(0,0.4fr)] md:gap-ds-5">
+          <div
+            className={cn(
+              "text-left md:order-2 md:text-right",
+              isVisible ? "animate-fade-in" : "opacity-0",
+            )}
           >
-            Top <span className="text-primary">competitors</span>
-          </h2>
-          <span
-            className={`inline-flex items-center gap-2 bg-primary text-primary-foreground text-meta font-bold px-4 py-2 rounded-full uppercase tracking-wide ${isVisible ? "animate-fade-in" : "opacity-0"}`}
-            style={{ animationDelay: "0.1s" }}
-          >
-            <span className="w-2 h-2 rounded-full bg-primary-foreground animate-pulse-dot" />
-            Live rankings
-          </span>
-        </div>
-        <p
-          className={`text-meta mb-8 ${isVisible ? "animate-fade-in" : "opacity-0"}`}
-          style={{ animationDelay: "0.15s" }}
-        >
-          Updated daily — climb or fall
-        </p>
-
-        <div className="max-w-3xl w-full mx-auto">
-          {/* Table Header */}
-          <div className="grid grid-cols-[60px_72px_1fr_100px] md:grid-cols-[80px_88px_1fr_120px] border-b-2 border-foreground pb-3 mb-0">
-            <span className="text-xs uppercase tracking-widest text-muted-foreground font-display">Rank</span>
-            <span className="text-xs uppercase tracking-widest text-muted-foreground font-display"></span>
-            <span className="text-xs uppercase tracking-widest text-muted-foreground font-display">Name</span>
-            <span className="text-xs uppercase tracking-widest text-muted-foreground font-display text-right">Points</span>
+            <h2 className="text-stat uppercase leading-[0.8] text-foreground">
+              <span className="block">Top</span>
+              <span className="block text-primary">Competitors</span>
+            </h2>
           </div>
 
-          {legends
-            .sort((a, b) => a.rank - b.rank)
-            .map((legend, i) => (
+          <div className={cn("w-full md:order-1", isVisible ? "animate-fade-in" : "opacity-0")}>
+            <div className="grid grid-cols-[auto_1fr] gap-ds-2 border-b-2 border-foreground pb-ds-2 sm:grid-cols-[auto_auto_1fr] sm:gap-ds-3">
+              <span className="text-meta uppercase tracking-widest">Rank</span>
+              <span className="hidden text-meta uppercase tracking-widest sm:block" />
+              <span className="text-meta uppercase tracking-widest">Name</span>
+            </div>
+
+            {legends.map((legend, i) => (
               <div
                 key={legend.name}
-                className={`grid grid-cols-[60px_72px_1fr_100px] md:grid-cols-[80px_88px_1fr_120px] items-center py-5 border-b border-border ${
-                  legend.rank === 1 ? "border-l-4 border-l-primary pl-4 bg-primary/5" : ""
-                } ${isVisible ? "animate-fade-in-up" : "opacity-0"}`}
-                style={{ animationDelay: `${(legends.length - i) * 150}ms` }}
+                className={cn(
+                  "grid grid-cols-[auto_1fr] items-center gap-ds-2 border-b border-border py-ds-3 sm:grid-cols-[auto_auto_1fr] sm:gap-ds-3",
+                  legend.rank === 1 && "border-l-4 border-l-primary bg-primary/5 pl-ds-2",
+                  isVisible ? "animate-fade-in-up" : "opacity-0",
+                )}
+                style={{ animationDelay: `${i * 80}ms` }}
               >
                 <span
-                  className={`text-5xl md:text-7xl font-bold font-display leading-none ${
-                    legend.rank === 1 ? "text-primary" : "text-border"
-                  }`}
+                  className={cn(
+                    "text-stat-sm leading-none",
+                    legend.rank === 1 ? "text-primary" : "text-border",
+                  )}
                 >
                   #{legend.rank}
                 </span>
-                <div className="relative flex items-center justify-center">
-                  <img
-                    src={legend.image}
-                    alt={legend.name}
-                    className={`relative z-10 w-18 h-18 md:w-20 md:h-20 rounded-full object-cover ${
-                      legend.rank === 1 ? "border-2 border-primary" : "border-2 border-border"
-                    }`}
-                  />
-                </div>
-                <span className="text-lg md:text-xl font-semibold font-body">
-                  {legend.name}
-                </span>
-                <span className="text-lg md:text-xl font-semibold font-body text-right text-muted-foreground">
-                  {legend.score.toLocaleString()} pts
-                </span>
+                <img
+                  src={legend.image}
+                  alt={legend.name}
+                  className={cn(
+                    "hidden h-16 w-16 rounded-full object-cover sm:block",
+                    legend.rank === 1 ? "border-2 border-primary shadow-primary-glow-sm" : "border-2 border-border",
+                  )}
+                />
+                <span className="text-section tracking-tight text-foreground">{legend.name}</span>
               </div>
             ))}
+          </div>
         </div>
       </div>
     </section>

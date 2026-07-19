@@ -4,6 +4,7 @@ import { Lightbulb, LogOut, Menu } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { ArenaEnergyBadge } from "@/components/ArenaEnergyBadge";
+import { ReportBugButton } from "@/components/ReportBugButton";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -120,6 +121,8 @@ export function AppHeader({ energy, compact = false }: AppHeaderProps) {
               <Lightbulb className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </Link>
           </Button>
+
+          <ReportBugButton />
 
           <ArenaEnergyBadge
             energy={energy}

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { Check, ChevronsUpDown, ImagePlus, Loader2, X } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, ChevronsUpDown, ImagePlus, Loader2, Star, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -338,8 +338,42 @@ const Setup = () => {
     e.target.value = "";
   };
 
-  const removeSelectedPhoto = (index: number) => {
-    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+  const usingNewPhotos = selectedFiles.length > 0;
+
+  const movePhoto = (fromIndex: number, toIndex: number) => {
+    if (fromIndex === toIndex || fromIndex < 0 || toIndex < 0) return;
+
+    if (usingNewPhotos) {
+      setSelectedFiles((prev) => {
+        if (toIndex >= prev.length) return prev;
+        const next = [...prev];
+        const [item] = next.splice(fromIndex, 1);
+        next.splice(toIndex, 0, item);
+        return next;
+      });
+      return;
+    }
+
+    setExistingPhotoUrls((prev) => {
+      if (toIndex >= prev.length) return prev;
+      const next = [...prev];
+      const [item] = next.splice(fromIndex, 1);
+      next.splice(toIndex, 0, item);
+      return next;
+    });
+  };
+
+  const setPhotoAsMain = (index: number) => {
+    if (index <= 0) return;
+    movePhoto(index, 0);
+  };
+
+  const removePhoto = (index: number) => {
+    if (usingNewPhotos) {
+      setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+      return;
+    }
+    setExistingPhotoUrls((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -656,90 +690,126 @@ const Setup = () => {
           <section className="surface-card space-y-4 p-4 sm:p-6">
             <div>
               <h2 className="text-section text-foreground">Photos</h2>
-              <p className="mt-2 text-meta">At least {MIN_PHOTOS}, up to {MAX_PHOTOS}. First photo is your main face.</p>
+              <p className="mt-2 text-meta">
+                At least 3, up to 6. Use the arrows to reorder — your first photo is what people see first.
+              </p>
             </div>
 
             {(() => {
-              const displayUrls =
-                selectedFiles.length > 0 ? previewUrls : existingPhotoUrls;
-              const canAddMore =
-                selectedFiles.length > 0
-                  ? selectedFiles.length < MAX_PHOTOS
-                  : existingPhotoUrls.length < MAX_PHOTOS || selectedFiles.length === 0;
+              const displayUrls = usingNewPhotos ? previewUrls : existingPhotoUrls;
+              const canAddMore = displayUrls.length < MAX_PHOTOS;
+              const tileClass =
+                "relative h-48 aspect-[3/4] w-auto shrink-0 snap-start overflow-hidden rounded-md sm:h-56";
 
               return (
                 <>
-                  {displayUrls.length > 0 ? (
-                    <div className="grid grid-cols-2 gap-2 sm:gap-4">
-                      {displayUrls.map((url, index) => (
+                  <div
+                    className={cn(
+                      "flex gap-3 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-1",
+                      "[-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+                    )}
+                  >
+                    {displayUrls.map((url, index) => {
+                      const isMain = index === 0;
+                      return (
                         <div
                           key={`${url}-${index}`}
                           className={cn(
-                            "relative overflow-hidden rounded-md border border-border bg-secondary",
-                            index === 0
-                              ? "col-span-2 aspect-[3/4] max-h-[52dvh]"
-                              : "aspect-square",
+                            tileClass,
+                            "border bg-secondary",
+                            isMain ? "border-2 border-primary shadow-primary-glow-sm" : "border-border",
                           )}
                         >
                           <img
                             src={url}
-                            alt={index === 0 ? "Main profile photo" : `Photo ${index + 1}`}
-                            className="h-full w-full object-cover"
+                            alt={isMain ? "Main profile photo" : `Photo ${index + 1}`}
+                            className="h-full w-full object-cover object-center"
+                            draggable={false}
                           />
-                          {index === 0 && (
-                            <span className="absolute left-2 top-2 rounded-md bg-primary px-2 py-2 text-meta font-bold uppercase tracking-wide text-primary-foreground">
+
+                          {isMain ? (
+                            <span className="absolute left-2 top-2 rounded-md bg-primary px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-primary-foreground">
                               Main
                             </span>
-                          )}
-                          {selectedFiles.length > 0 && (
+                          ) : (
                             <button
                               type="button"
-                              onClick={() => removeSelectedPhoto(index)}
+                              onClick={() => setPhotoAsMain(index)}
                               disabled={isSubmitting}
-                              className="absolute right-2 top-2 rounded-full bg-background/80 p-2 text-foreground hover:bg-background"
-                              aria-label={`Remove photo ${index + 1}`}
+                              className="absolute left-2 top-2 rounded-full bg-background/85 p-1.5 text-foreground hover:bg-background hover:text-primary"
+                              aria-label={`Set photo ${index + 1} as main`}
+                              title="Set as main"
                             >
-                              <X className="h-4 w-4" />
+                              <Star className="h-3.5 w-3.5" />
                             </button>
                           )}
-                        </div>
-                      ))}
-                    </div>
-                  ) : null}
 
-                  {canAddMore && (
-                    <label
-                      htmlFor="photos"
-                      className={cn(
-                        "flex cursor-pointer flex-col items-center justify-center gap-4 rounded-md border-2 border-dashed border-border bg-secondary/40 px-4 text-center transition hover:border-primary/60 hover:bg-primary/5",
-                        displayUrls.length === 0 ? "min-h-[280px] py-12" : "min-h-[120px] py-6",
-                        (isSubmitting || selectedFiles.length >= MAX_PHOTOS) &&
-                          "pointer-events-none opacity-50",
-                      )}
-                    >
-                      <ImagePlus className="h-10 w-10 text-primary" aria-hidden />
-                      <div className="space-y-2">
-                        <p className="text-section text-foreground normal-case tracking-tight">
-                          {displayUrls.length === 0 ? "Add your photos" : "Add more photos"}
-                        </p>
-                        <p className="text-meta">
-                          Tap to upload · JPG or PNG · {MIN_PHOTOS}–{MAX_PHOTOS} required
-                        </p>
-                      </div>
-                      <input
-                        id="photos"
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        onChange={handlePhotoChange}
-                        disabled={isSubmitting || selectedFiles.length >= MAX_PHOTOS}
-                        className="sr-only"
-                      />
-                    </label>
-                  )}
+                          <button
+                            type="button"
+                            onClick={() => removePhoto(index)}
+                            disabled={isSubmitting}
+                            className="absolute right-2 top-2 rounded-full bg-background/85 p-1.5 text-foreground hover:bg-background hover:text-destructive"
+                            aria-label={`Remove photo ${index + 1}`}
+                          >
+                            <X className="h-3.5 w-3.5" />
+                          </button>
+
+                          <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-1 bg-gradient-to-t from-black/70 to-transparent px-1.5 pb-1.5 pt-6">
+                            <button
+                              type="button"
+                              onClick={() => movePhoto(index, index - 1)}
+                              disabled={isSubmitting || index === 0}
+                              className="rounded-full bg-background/80 p-1.5 text-foreground hover:bg-background disabled:opacity-40"
+                              aria-label={`Move photo ${index + 1} left`}
+                            >
+                              <ChevronLeft className="h-3.5 w-3.5" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => movePhoto(index, index + 1)}
+                              disabled={isSubmitting || index === displayUrls.length - 1}
+                              className="rounded-full bg-background/80 p-1.5 text-foreground hover:bg-background disabled:opacity-40"
+                              aria-label={`Move photo ${index + 1} right`}
+                            >
+                              <ChevronRight className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                    {canAddMore && (
+                      <label
+                        htmlFor="photos"
+                        className={cn(
+                          tileClass,
+                          "flex cursor-pointer flex-col items-center justify-center gap-2 border-2 border-dashed border-border bg-secondary/40 px-2 text-center transition hover:border-primary/60 hover:bg-primary/5",
+                          (isSubmitting || displayUrls.length >= MAX_PHOTOS) &&
+                            "pointer-events-none opacity-50",
+                        )}
+                      >
+                        <ImagePlus className="h-8 w-8 text-primary" aria-hidden />
+                        <span className="text-xs font-semibold font-body text-foreground">
+                          {displayUrls.length === 0 ? "Add photos" : "Add more"}
+                        </span>
+                        <span className="text-[10px] text-muted-foreground font-body leading-tight">
+                          JPG or PNG
+                        </span>
+                        <input
+                          id="photos"
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={handlePhotoChange}
+                          disabled={isSubmitting || displayUrls.length >= MAX_PHOTOS}
+                          className="sr-only"
+                        />
+                      </label>
+                    )}
+                  </div>
 
                   <p className="text-meta">
-                    {selectedFiles.length > 0
+                    {usingNewPhotos
                       ? `${selectedFiles.length} new photo${selectedFiles.length === 1 ? "" : "s"} selected`
                       : existingPhotoUrls.length > 0
                         ? `${existingPhotoUrls.length} saved photo${existingPhotoUrls.length === 1 ? "" : "s"} — select new files to replace them`

@@ -32,11 +32,15 @@ function getErrorMessage(error: unknown): string {
   return String(error);
 }
 
+type ReportBugButtonProps = {
+  className?: string;
+};
+
 /**
- * Global floating bug report control — available on every route.
- * z-40 keeps it above page content but under dialogs/modals (z-50).
+ * Header icon button that opens the bug report dialog.
+ * Inserts into bug_reports and fires bug_reported analytics.
  */
-export function ReportBugButton() {
+export function ReportBugButton({ className }: ReportBugButtonProps) {
   const location = useLocation();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -94,19 +98,16 @@ export function ReportBugButton() {
     <>
       <Button
         type="button"
-        variant="secondary"
-        size="sm"
+        variant="ghost"
+        size="icon"
         onClick={() => setOpen(true)}
         aria-label="Report a bug"
         className={cn(
-          "fixed bottom-4 right-4 z-40 h-10 gap-2 rounded-full border border-border bg-secondary/90 px-3 text-muted-foreground shadow-md backdrop-blur-sm",
-          "hover:bg-secondary hover:text-foreground",
-          "sm:bottom-6 sm:right-6 sm:px-4",
-          "pb-[max(0.5rem,env(safe-area-inset-bottom))]",
+          "h-8 w-8 text-muted-foreground hover:text-foreground sm:h-10 sm:w-10",
+          className,
         )}
       >
-        <Bug className="h-4 w-4 shrink-0" aria-hidden />
-        <span className="hidden sm:inline font-body text-sm">Report a bug</span>
+        <Bug className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden />
       </Button>
 
       <Dialog open={open} onOpenChange={handleOpenChange}>

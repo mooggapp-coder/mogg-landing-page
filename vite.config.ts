@@ -18,7 +18,17 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.png", "apple-touch-icon.png"],
+      includeAssets: [
+        "favicon.ico",
+        "favicon.png",
+        "favicon-16x16.png",
+        "favicon-32x32.png",
+        "apple-touch-icon.png",
+        "og-image.png",
+        "pwa-192x192.png",
+        "pwa-512x512.png",
+        "pwa-512x512-maskable.png",
+      ],
       manifest: {
         name: "MOGG — The Competition Arena",
         short_name: "MOGG",

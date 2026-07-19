@@ -1,41 +1,39 @@
 import { Link } from "react-router-dom";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { cn } from "@/lib/utils";
 
 const WaitlistSection = () => {
   const { ref, isVisible } = useScrollAnimation();
 
   return (
-    <section ref={ref} className="py-12 lg:py-16 bg-surface-dark">
-      <div className="container mx-auto px-6">
-        <div className={`max-w-lg ${isVisible ? "animate-fade-in" : "opacity-0"}`}>
-          <h2 className="text-page-title mb-4 text-surface-dark-fg">
-            Your ranking <span className="text-primary">starts here</span>
+    <section ref={ref} className="bg-surface-dark py-ds-4 lg:py-ds-5">
+      <div className="container mx-auto px-ds-2 sm:px-ds-3">
+        <div
+          className={cn(
+            "max-w-lg text-left md:ml-auto md:text-right",
+            isVisible ? "animate-fade-in" : "opacity-0",
+          )}
+        >
+          <h2 className="text-page-title mb-ds-3 text-surface-dark-fg">
+            Battles and <span className="text-primary">ratings</span>
           </h2>
-          <p className="text-surface-dark-fg/60 text-body mb-8 font-body">
-            Create your account and enter the arena — climb or get forgotten.
-          </p>
 
-          <div className="space-y-4">
+          <div className="space-y-ds-2">
             <Link
               to="/signup"
-              className="w-full inline-flex h-btn-primary min-h-btn-primary items-center justify-center rounded-md bg-primary px-6 font-bold text-primary-foreground shadow-primary-glow transition-[transform,background-color] duration-150 hover:bg-primary/90 active:scale-[0.97] font-body"
+              className="inline-flex h-btn-primary min-h-btn-primary w-full items-center justify-center rounded-md bg-primary px-ds-3 font-bold text-primary-foreground shadow-primary-glow transition-[transform,background-color] duration-150 hover:bg-primary/90 active:scale-[0.97] font-body"
             >
-              Enter the Arena — Free
+              Join free
             </Link>
-            <p className="text-sm text-surface-dark-fg/50 font-body text-center">
+            <p className="text-center text-sm text-surface-dark-fg/50 font-body md:text-right">
               Already have an account?{" "}
-              <Link to="/login" className="text-surface-dark-fg hover:text-primary underline underline-offset-2 font-medium transition-colors">
+              <Link
+                to="/login"
+                className="font-medium text-surface-dark-fg underline underline-offset-2 transition-colors hover:text-primary"
+              >
                 Log in
               </Link>
             </p>
-          </div>
-
-          <div className="flex items-center justify-center gap-3 mt-6 text-xs text-surface-dark-fg/40 font-body">
-            <span>Free to join</span>
-            <span className="w-1 h-1 rounded-full bg-surface-dark-fg/20" />
-            <span>No credit card required</span>
-            <span className="w-1 h-1 rounded-full bg-surface-dark-fg/20" />
-            <span>Compete worldwide</span>
           </div>
         </div>
       </div>

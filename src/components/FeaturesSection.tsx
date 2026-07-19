@@ -1,167 +1,69 @@
+import { Link } from "react-router-dom";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-
-const features = [
-  {
-    tag: "COMPETE",
-    title: "Battles",
-    description: "Go head-to-head in high-stakes competition match-ups",
-    color: "#FF3B30",
-    subs: [
-      "Featured Match-up",
-      "Random Match-up — 1 vs random opponent",
-      "Direct Challenge — challenge a specific competitor",
-      "Live Match-up — real-time head-to-head",
-      "Squad Match-up — team vs team",
-    ],
-    fullWidth: true,
-  },
-  {
-    tag: "GET RANKED",
-    title: "Ranking",
-    description: "Know exactly where you stand in the competition",
-    color: "#FF9F0A",
-    subs: [
-      "Community Voting — ranked by real users",
-      "Head-to-head Results — based on match-up outcomes",
-    ],
-  },
-  {
-    tag: "CLIMB",
-    title: "Ranking",
-    description: "See how you rank against everyone",
-    color: "#30D158",
-    subs: [
-      "World Ranking — worldwide standings",
-      "Country Ranking — your territory",
-      "Category Ranking — compete in different categories",
-    ],
-  },
-  {
-    tag: "CONNECT",
-    title: "Community",
-    description: "A community built around real competition and real results",
-    color: "#0A84FF",
-    subs: [
-      "Discuss, share, and learn from the top-ranked",
-      "Follow your favorite competitors",
-      "Community-driven feedback and debates",
-    ],
-  },
-  {
-    tag: "IMPROVE",
-    title: "Challenges & Journey",
-    description: "Compete, improve, and track your progress over time",
-    color: "#BF5AF2",
-    subs: [
-      "Join community challenges",
-      "Share your progress",
-      "Track visible progress over time",
-      "Get accountability from the community",
-    ],
-  },
-  {
-    tag: "ASCEND",
-    title: "Personalized Ascension Plan",
-    description: "A custom roadmap built around your goals and your level",
-    color: "#FFD60A",
-    subs: [
-      "Targeted to help you climb the rankings",
-      "Updated as you improve and climb",
-      "Covers training, strategy, and consistency",
-    ],
-    fullWidth: true,
-  },
-];
+import { cn } from "@/lib/utils";
 
 const FeaturesSection = () => {
   const { ref, isVisible } = useScrollAnimation();
 
   return (
-    <section ref={ref} id="features" className="py-12 lg:py-16 bg-background">
-      <div className="container mx-auto px-6 flex flex-col items-center">
-        <h2
-          className={`text-page-title mb-8 font-display text-foreground md:mb-12 ${isVisible ? "animate-fade-in" : "opacity-0"}`}
-        >
-          Built for the <span className="text-primary">elite</span>
-        </h2>
+    <section ref={ref} id="features" className="bg-background py-ds-4 lg:py-ds-5">
+      <div className="container mx-auto px-ds-2 sm:px-ds-3">
+        <div className="mb-ds-4 max-w-2xl text-left">
+          <h2
+            className={cn(
+              "text-page-title text-foreground",
+              isVisible ? "animate-fade-in" : "opacity-0",
+            )}
+          >
+            How do you want to play?
+          </h2>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl w-full mx-auto">
-          {features.map((feature, i) => (
-            <div
-              key={feature.title}
-              className={`relative overflow-hidden rounded-[14px] p-6 transition-all duration-150 cursor-default ${
-                feature.fullWidth ? "md:col-span-2" : ""
-              } ${isVisible ? "animate-fade-in-up" : "opacity-0"}`}
-              style={{
-                backgroundColor: "hsl(var(--primary) / 0.15)",
-                border: "3px solid hsl(var(--primary) / 0.3)",
-                boxShadow: feature.fullWidth
-                  ? "7px 7px 0px hsl(var(--primary) / 0.3)"
-                  : "5px 5px 0px hsl(var(--primary) / 0.3)",
-                padding: "24px",
-                animationDelay: `${i * 80}ms`,
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translate(2px, 2px)";
-                e.currentTarget.style.boxShadow = "3px 3px 0px hsl(var(--primary) / 0.3)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translate(0, 0)";
-                e.currentTarget.style.boxShadow = feature.fullWidth
-                  ? "7px 7px 0px hsl(var(--primary) / 0.3)"
-                  : "5px 5px 0px hsl(var(--primary) / 0.3)";
-              }}
-            >
-              {/* Decorative corner dot */}
-              <div
-                className="absolute top-3 left-3 w-5 h-5 rounded-full"
-                style={{
-                  backgroundColor: feature.color,
-                  border: "2px solid hsl(var(--primary) / 0.4)",
-                }}
-              />
-
-              <div className="ml-7">
-                <span
-                  className="inline-block font-bold text-[11px] uppercase tracking-[1.5px] px-2.5 py-1 rounded-[6px] mb-3 font-body"
-                  style={{
-                    backgroundColor: feature.color,
-                    border: "2px solid hsl(var(--primary) / 0.4)",
-                    color: "#FFFFFF",
-                  }}
-                >
-                  {feature.tag}
-                </span>
-
-                <h3 className="text-[22px] font-bold font-display uppercase tracking-tight mb-1 text-foreground">
-                  {feature.title}
-                </h3>
-
-                <p className="text-[13px] font-body mb-4 text-muted-foreground">
-                  {feature.description}
-                </p>
-
-                <div className="flex flex-col" style={{ gap: "10px" }}>
-                  {feature.subs.map((sub) => (
-                    <div key={sub} className="flex items-start gap-2.5">
-                      <div
-                        className="w-2 h-2 rounded-full mt-[3px] shrink-0"
-                        style={{
-                          backgroundColor: feature.color,
-                          border: "2px solid hsl(var(--primary) / 0.4)",
-                        }}
-                      />
-                      <span
-                        className="text-[13px] font-body leading-snug text-muted-foreground"
-                      >
-                        {sub}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+        <div className="grid grid-cols-1 gap-ds-3 md:grid-cols-2 md:gap-ds-4">
+          {/* Arena — flagship */}
+          <div
+            className={cn(
+              "surface-card flex flex-col gap-ds-3 border-primary p-ds-3 sm:p-ds-4",
+              "transition-[border-color,box-shadow] duration-150 hover:border-primary hover:shadow-primary-glow",
+              isVisible ? "animate-fade-in-up" : "opacity-0",
+            )}
+          >
+            <h3 className="text-stat uppercase leading-[0.85] text-primary">Arena</h3>
+            <div className="space-y-ds-1">
+              <p className="text-body text-muted-foreground">Vote head-to-head.</p>
+              <p className="text-body text-muted-foreground">Beat real people.</p>
+              <p className="text-body text-muted-foreground">Climb the world ranking.</p>
             </div>
-          ))}
+            <Link
+              to="/arena"
+              className="mt-auto inline-flex h-btn-primary min-h-btn-primary w-full items-center justify-center rounded-md bg-primary px-ds-3 font-bold text-primary-foreground shadow-primary-glow transition-[transform,background-color] duration-150 hover:bg-primary/90 active:scale-[0.97] font-body"
+            >
+              Enter Arena
+            </Link>
+          </div>
+
+          {/* PSL — equal weight, lighter chrome */}
+          <div
+            className={cn(
+              "surface-card flex flex-col gap-ds-3 border-border p-ds-3 sm:p-ds-4",
+              "transition-[border-color,box-shadow] duration-150 hover:border-muted-foreground/40 hover:bg-card/80",
+              isVisible ? "animate-fade-in-up" : "opacity-0",
+            )}
+            style={{ animationDelay: "60ms" }}
+          >
+            <h3 className="text-stat uppercase leading-[0.85] text-foreground">PSL</h3>
+            <div className="space-y-ds-1">
+              <p className="text-body text-muted-foreground">Get rated 1 to 10.</p>
+              <p className="text-body text-muted-foreground">Compare your average.</p>
+              <p className="text-body text-muted-foreground">Watch it move.</p>
+            </div>
+            <Link
+              to="/rate"
+              className="mt-auto inline-flex h-btn-primary min-h-btn-primary w-full items-center justify-center rounded-md border border-border bg-secondary px-ds-3 font-bold text-foreground transition-[transform,background-color] duration-150 hover:bg-secondary/80 active:scale-[0.97] font-body"
+            >
+              Get Rated
+            </Link>
+          </div>
         </div>
       </div>
     </section>

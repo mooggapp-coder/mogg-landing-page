@@ -8,14 +8,13 @@ const Header = () => {
         <div className="inline-flex items-center gap-2 bg-background/30 backdrop-blur-sm rounded-full px-4 py-2">
           <span className="w-2 h-2 rounded-full bg-primary animate-pulse-dot" />
           <p className="text-meta font-medium tracking-wide text-foreground">
-            The arena is live —{" "}
+            Battles and ratings are live —{" "}
             <Link
               to="/signup"
               className="underline underline-offset-2 text-primary hover:text-primary/80 transition-colors"
             >
               claim your spot
-            </Link>{" "}
-            and start competing
+            </Link>
           </p>
         </div>
       </div>
@@ -35,13 +34,13 @@ const Header = () => {
               href="#features"
               className="text-sm text-muted-foreground hover:text-primary transition-colors font-medium font-body"
             >
-              Why MOGG
+              How to play
             </a>
             <Link
-              to="/signup"
+              to="/rate"
               className="text-sm text-muted-foreground hover:text-primary transition-colors font-medium font-body"
             >
-              Compete
+              Rate
             </Link>
           </nav>
 
@@ -56,7 +55,7 @@ const Header = () => {
               to="/signup"
               className="inline-flex items-center justify-center rounded-md bg-primary px-4 sm:px-6 h-btn-secondary min-h-btn-secondary font-bold text-sm text-primary-foreground shadow-primary-glow-sm transition-[transform,background-color] duration-150 hover:bg-primary/90 active:scale-[0.97] font-body"
             >
-              Enter Arena
+              Join
             </Link>
           </div>
         </div>

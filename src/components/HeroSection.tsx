@@ -7,58 +7,48 @@ const HeroSection = () => {
   return (
     <section
       ref={ref}
-      className="relative min-h-[100dvh] flex items-center bg-background overflow-hidden"
+      className="relative flex min-h-[100dvh] items-center overflow-hidden bg-background"
     >
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 -left-32 w-[500px] h-[500px] rounded-full bg-primary/15 blur-[120px] animate-float-slow" />
-        <div className="absolute bottom-1/4 right-0 w-[400px] h-[400px] rounded-full bg-primary/10 blur-[100px] animate-float-slow-reverse" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full bg-primary/10 blur-[80px] animate-pulse-glow" />
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -left-32 top-1/4 h-[500px] w-[500px] rounded-full bg-primary/15 blur-[120px] animate-float-slow" />
+        <div className="absolute bottom-1/4 right-0 h-[400px] w-[400px] rounded-full bg-primary/10 blur-[100px] animate-float-slow-reverse" />
+        <div className="absolute left-1/2 top-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[80px] animate-pulse-glow" />
       </div>
 
-      <div className="container mx-auto px-6 py-12 lg:py-16 relative z-10">
-        <div className="mx-auto max-w-3xl text-center">
-          <p
-            className={`text-eyebrow mb-4 ${isVisible ? "animate-fade-in" : "opacity-0"}`}
-          >
-            The competition arena
-          </p>
-
+      <div className="container relative z-10 mx-auto px-ds-2 py-ds-4 sm:px-ds-3">
+        <div className="mx-auto max-w-5xl text-center">
           <h1
-            className={`text-page-title text-[12vw] sm:text-[10vw] lg:text-[5.5rem] leading-[0.85] text-foreground ${
+            className={`text-stat-hero mx-auto w-full max-w-full uppercase leading-[0.8] text-foreground ${
               isVisible ? "animate-fade-in" : "opacity-0"
             }`}
-            style={{ animationDelay: "40ms" }}
           >
-            Enter the{" "}
-            <span className="text-primary">arena</span>
+            Find out where you rank.
           </h1>
 
-          <p
-            className={`mx-auto mt-6 max-w-lg text-body text-muted-foreground sm:text-lg ${
+          <div
+            className={`mx-auto mt-ds-3 max-w-xl space-y-ds-1 text-body text-muted-foreground ${
               isVisible ? "animate-fade-in" : "opacity-0"
             }`}
-            style={{ animationDelay: "80ms" }}
+            style={{ animationDelay: "60ms" }}
           >
-            Vote head-to-head, climb the world ranking, and prove you belong at the top —
-            not another feed to scroll.
-          </p>
+            <p>Vote in battles.</p>
+            <p>Get rated 1-10.</p>
+            <p>See what the world thinks.</p>
+          </div>
 
           <div
-            className={`mt-8 flex flex-col items-center gap-4 ${
+            className={`mt-ds-4 flex flex-col items-center gap-ds-2 ${
               isVisible ? "animate-fade-in" : "opacity-0"
             }`}
-            style={{ animationDelay: "120ms" }}
+            style={{ animationDelay: "100ms" }}
           >
             <Link
               to="/signup"
-              className="inline-flex h-btn-primary min-h-btn-primary w-full sm:w-auto items-center justify-center rounded-md bg-primary px-8 text-base font-bold text-primary-foreground shadow-primary-glow transition-[transform,box-shadow] duration-150 hover:bg-primary/90 active:scale-[0.97] font-body"
+              className="inline-flex h-btn-primary min-h-btn-primary w-full items-center justify-center rounded-md bg-primary px-ds-4 text-base font-bold text-primary-foreground shadow-primary-glow transition-[transform,box-shadow] duration-150 hover:bg-primary/90 active:scale-[0.97] font-body sm:w-auto"
             >
-              Enter the Arena
+              Get started
             </Link>
-            <Link
-              to="/login"
-              className="text-meta hover:text-foreground hover:underline"
-            >
+            <Link to="/login" className="text-meta hover:text-foreground hover:underline">
               Already competing? Log in
             </Link>
           </div>
