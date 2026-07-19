@@ -4,15 +4,22 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+  MOGG design tokens — change values here (and tailwind.config.ts) only.
+  Spacing scale (px): 8 / 16 / 24 / 32 / 48  →  Tailwind space 2 / 4 / 6 / 8 / 12
+  Radius: one value for cards, inputs, buttons, photos
+*/
+
 @layer base {
   :root {
     --background: 0 0% 4%;
     --foreground: 0 0% 95%;
 
-    --card: 0 0% 10%;
+    /* Lifted surface — not pure black */
+    --card: 0 0% 9%;
     --card-foreground: 0 0% 95%;
 
-    --popover: 0 0% 6%;
+    --popover: 0 0% 8%;
     --popover-foreground: 0 0% 95%;
 
     --primary: 299 89% 67%;
@@ -21,8 +28,8 @@
     --secondary: 0 0% 12%;
     --secondary-foreground: 0 0% 95%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 55%;
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 52%;
 
     --accent: 299 89% 67%;
     --accent-foreground: 0 0% 100%;
@@ -34,7 +41,8 @@
     --input: 0 0% 18%;
     --ring: 299 89% 67%;
 
-    --radius: 0.5rem;
+    /* Single corner language */
+    --radius: 0.75rem; /* 12px */
 
     --gold: 45 93% 58%;
     --silver: 210 10% 72%;
@@ -43,6 +51,24 @@
     --surface-alt: 0 0% 8%;
     --surface-dark: 0 0% 98%;
     --surface-dark-fg: 0 0% 5%;
+
+    /* Spacing tokens (px) */
+    --space-1: 8px;
+    --space-2: 16px;
+    --space-3: 24px;
+    --space-4: 32px;
+    --space-5: 48px;
+
+    /* Type tokens */
+    --text-page-title: clamp(2.75rem, 6vw, 3.75rem); /* ~44–60px */
+    --text-section: clamp(1.375rem, 3vw, 1.75rem); /* ~22–28px */
+    --text-body: 1rem;
+    --text-meta: 0.8125rem; /* 13px */
+    --text-stat: clamp(4.5rem, 12vw, 7rem); /* ~72–112px, fight-poster */
+    --text-stat-hero: clamp(6rem, 18vw, 10rem); /* ~96–160px, PSL dominant */
+
+    --btn-primary-h: 56px;
+    --btn-secondary-h: 48px;
   }
 }
 
@@ -51,15 +77,196 @@
     @apply border-border;
   }
 
+  html {
+    @apply antialiased;
+  }
+
   body {
-    @apply bg-background text-foreground antialiased;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    @apply bg-background text-foreground font-body;
+    font-size: var(--text-body);
+    position: relative;
+    min-height: 100dvh;
+  }
+
+  /* Faint grain — barely perceptible texture over flat black */
+  body::before {
+    content: "";
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 180px 180px;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Barlow Condensed', sans-serif;
     text-transform: uppercase;
     letter-spacing: -0.01em;
+  }
+}
+
+@layer components {
+  /* —— Type scale —— */
+  .text-page-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: var(--text-page-title);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+
+  .text-section {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: var(--text-section);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+
+  .text-body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: var(--text-body);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .text-meta {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: var(--text-meta);
+    font-weight: 500;
+    line-height: 1.4;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .text-eyebrow {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: var(--text-meta);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: hsl(var(--primary));
+  }
+
+  /* Fight-poster status numbers */
+  .text-stat {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: var(--text-stat);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  .text-stat-hero {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: var(--text-stat-hero);
+    font-weight: 900;
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  .text-stat-sm {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(2.25rem, 5vw, 3rem);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  /* Fight badge between Arena competitors */
+  .vs-badge {
+    @apply relative z-20 flex items-center justify-center rounded-full border-2 border-primary bg-card font-display font-black uppercase text-primary shadow-primary-glow;
+    width: var(--space-5);
+    height: var(--space-5);
+    font-size: 1.25rem;
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+
+  @media (min-width: 640px) {
+    .vs-badge {
+      width: calc(var(--space-5) + var(--space-2));
+      height: calc(var(--space-5) + var(--space-2));
+      font-size: 1.75rem;
+    }
+  }
+
+  .animate-stat-tick {
+    animation: stat-tick 120ms ease-out;
+  }
+
+  .animate-win-pulse {
+    animation: win-pulse 280ms ease-out;
+  }
+
+  .animate-fade-in {
+    animation: content-fade-in 220ms ease-out both;
+  }
+
+  .animate-number-pop {
+    animation: number-pop 200ms ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-stat-tick,
+    .animate-win-pulse,
+    .animate-fade-in,
+    .animate-number-pop,
+    .animate-word-slide-up,
+    .animate-fade-in-up,
+    .animate-border-slide,
+    .animate-pulse-dot,
+    .animate-float-slow,
+    .animate-float-slow-reverse,
+    .animate-pulse-glow {
+      animation: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+
+  /* —— Surfaces —— */
+  .surface-card {
+    @apply border border-border bg-card text-card-foreground;
+    border-radius: var(--radius);
+  }
+
+  .page-shell {
+    @apply mx-auto w-full max-w-md;
+    padding-left: var(--space-2);
+    padding-right: var(--space-2);
+    padding-top: var(--space-2);
+    padding-bottom: var(--space-3);
+  }
+
+  @media (min-width: 640px) {
+    .page-shell {
+      padding-left: var(--space-3);
+      padding-right: var(--space-3);
+      padding-top: var(--space-3);
+      padding-bottom: var(--space-4);
+    }
+  }
+
+  .page-header {
+    margin-bottom: var(--space-3);
+    text-align: center;
+  }
+
+  .page-header .text-eyebrow {
+    margin-bottom: var(--space-1);
   }
 }
 
@@ -71,6 +278,26 @@
   .font-body {
     font-family: 'Plus Jakarta Sans', sans-serif;
   }
+
+  /* Spacing scale helpers — prefer these over arbitrary values */
+  .gap-ds-1 { gap: var(--space-1); }
+  .gap-ds-2 { gap: var(--space-2); }
+  .gap-ds-3 { gap: var(--space-3); }
+  .gap-ds-4 { gap: var(--space-4); }
+  .gap-ds-5 { gap: var(--space-5); }
+
+  .stack-ds-1 > :not([hidden]) ~ :not([hidden]) { margin-top: var(--space-1); }
+  .stack-ds-2 > :not([hidden]) ~ :not([hidden]) { margin-top: var(--space-2); }
+  .stack-ds-3 > :not([hidden]) ~ :not([hidden]) { margin-top: var(--space-3); }
+  .stack-ds-4 > :not([hidden]) ~ :not([hidden]) { margin-top: var(--space-4); }
+
+  .p-ds-1 { padding: var(--space-1); }
+  .p-ds-2 { padding: var(--space-2); }
+  .p-ds-3 { padding: var(--space-3); }
+  .p-ds-4 { padding: var(--space-4); }
+  .px-ds-2 { padding-left: var(--space-2); padding-right: var(--space-2); }
+  .py-ds-2 { padding-top: var(--space-2); padding-bottom: var(--space-2); }
+  .py-ds-3 { padding-top: var(--space-3); padding-bottom: var(--space-3); }
 }
 
 /* Hero word stagger animation */
@@ -113,6 +340,52 @@
   }
   50% {
     opacity: 0.4;
+  }
+}
+
+@keyframes stat-tick {
+  0% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes win-pulse {
+  0% {
+    box-shadow: 0 0 0 0 hsl(var(--primary) / 0.55);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 32px 4px hsl(var(--primary) / 0.55);
+    transform: scale(1.03);
+  }
+  100% {
+    box-shadow: 0 0 24px hsl(var(--primary) / 0.35);
+    transform: scale(1.02);
+  }
+}
+
+@keyframes content-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes number-pop {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }
 

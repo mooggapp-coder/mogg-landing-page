@@ -31,8 +31,8 @@ const features = [
     description: "See how you rank against everyone",
     color: "#30D158",
     subs: [
-      "Global Ranking — worldwide leaderboard",
-      "Local Ranking — your city and region",
+      "World Ranking — worldwide standings",
+      "Country Ranking — your territory",
       "Category Ranking — compete in different categories",
     ],
   },
@@ -77,12 +77,12 @@ const FeaturesSection = () => {
   const { ref, isVisible } = useScrollAnimation();
 
   return (
-    <section ref={ref} id="features" className="py-24 lg:py-32 bg-background">
+    <section ref={ref} id="features" className="py-12 lg:py-16 bg-background">
       <div className="container mx-auto px-6 flex flex-col items-center">
         <h2
-          className={`text-4xl md:text-6xl font-black mb-16 font-display text-foreground ${isVisible ? "animate-fade-in-up" : "opacity-0"}`}
+          className={`text-page-title mb-8 font-display text-foreground md:mb-12 ${isVisible ? "animate-fade-in" : "opacity-0"}`}
         >
-          Built for the <span className="text-primary">Elite</span>
+          Built for the <span className="text-primary">elite</span>
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl w-full mx-auto">

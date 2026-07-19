@@ -24,6 +24,13 @@ dist-ssr
 *.sw?
 
 .env
+.env.local
+.env.*.local
 
 # Supabase CLI local cache
 supabase/.temp
+
+# Local screenshot capture (credentials / generated images)
+scripts/capture-screens.cjs
+screenshots/
+mogg-screenshots*.zip

@@ -16,6 +16,16 @@ export default {
       fontFamily: {
         sans: ["Plus Jakarta Sans", "sans-serif"],
         display: ["Barlow Condensed", "sans-serif"],
+        body: ["Plus Jakarta Sans", "sans-serif"],
+      },
+      spacing: {
+        /* Design-system aliases (8 / 16 / 24 / 32 / 48) */
+        ds: "8px",
+        "ds-1": "8px",
+        "ds-2": "16px",
+        "ds-3": "24px",
+        "ds-4": "32px",
+        "ds-5": "48px",
       },
       colors: {
         border: "hsl(var(--border))",
@@ -59,9 +69,25 @@ export default {
         "surface-dark-fg": "hsl(var(--surface-dark-fg))",
       },
       borderRadius: {
+        /* One radius everywhere — lg/md/sm/xl all resolve to --radius */
+        DEFAULT: "var(--radius)",
         lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        md: "var(--radius)",
+        sm: "var(--radius)",
+        xl: "var(--radius)",
+        "2xl": "var(--radius)",
+      },
+      boxShadow: {
+        "primary-glow": "0 0 24px hsl(var(--primary) / 0.35)",
+        "primary-glow-sm": "0 0 16px hsl(var(--primary) / 0.25)",
+      },
+      height: {
+        "btn-primary": "var(--btn-primary-h)",
+        "btn-secondary": "var(--btn-secondary-h)",
+      },
+      minHeight: {
+        "btn-primary": "var(--btn-primary-h)",
+        "btn-secondary": "var(--btn-secondary-h)",
       },
       keyframes: {
         "accordion-down": {

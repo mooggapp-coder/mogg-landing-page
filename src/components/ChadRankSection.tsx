@@ -13,27 +13,27 @@ const ChadRankSection = () => {
   const { ref, isVisible } = useScrollAnimation();
 
   return (
-    <section ref={ref} className="py-24 lg:py-32 bg-background">
+    <section ref={ref} className="py-12 lg:py-16 bg-background">
       <div className="container mx-auto px-6 flex flex-col items-center">
-        <div className="flex flex-col items-center gap-3 mb-2 text-center">
+        <div className="flex flex-col items-center gap-4 mb-8 text-center">
           <h2
-            className={`text-4xl md:text-6xl font-black font-display ${isVisible ? "animate-fade-in-up" : "opacity-0"}`}
+            className={`text-page-title ${isVisible ? "animate-fade-in" : "opacity-0"}`}
           >
-            Top <span className="text-primary">Competitors</span>
+            Top <span className="text-primary">competitors</span>
           </h2>
           <span
-            className={`inline-flex items-center gap-1.5 bg-primary text-primary-foreground text-[11px] font-semibold px-2.5 py-1 rounded-full font-body ${isVisible ? "animate-fade-in-up" : "opacity-0"}`}
-            style={{ animationDelay: "0.2s" }}
+            className={`inline-flex items-center gap-2 bg-primary text-primary-foreground text-meta font-bold px-4 py-2 rounded-full uppercase tracking-wide ${isVisible ? "animate-fade-in" : "opacity-0"}`}
+            style={{ animationDelay: "0.1s" }}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-primary-foreground animate-pulse-dot" />
-            LIVE
+            <span className="w-2 h-2 rounded-full bg-primary-foreground animate-pulse-dot" />
+            Live rankings
           </span>
         </div>
         <p
-          className={`text-xs text-muted-foreground font-body mb-12 ${isVisible ? "animate-fade-in-up" : "opacity-0"}`}
-          style={{ animationDelay: "0.3s" }}
+          className={`text-meta mb-8 ${isVisible ? "animate-fade-in" : "opacity-0"}`}
+          style={{ animationDelay: "0.15s" }}
         >
-          Updated daily
+          Updated daily — climb or fall
         </p>
 
         <div className="max-w-3xl w-full mx-auto">

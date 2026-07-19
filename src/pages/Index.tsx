@@ -13,7 +13,7 @@ const Index = () => (
     <div id="features">
       <FeaturesSection />
     </div>
-    <div id="waitlist">
+    <div id="get-started">
       <WaitlistSection />
     </div>
     <FooterSection />
