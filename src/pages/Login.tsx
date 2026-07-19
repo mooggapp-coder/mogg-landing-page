@@ -3,9 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { OAuthProviderButtons } from "@/components/auth/OAuthProviderButtons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import {
   Card,
   CardContent,
@@ -83,8 +85,20 @@ const Login = () => {
             </CardDescription>
           </CardHeader>
 
+          <CardContent className="space-y-4">
+            <OAuthProviderButtons disabled={isSubmitting} />
+
+            <div className="relative flex items-center gap-3 py-1">
+              <Separator className="flex-1" />
+              <span className="text-xs uppercase tracking-wide text-muted-foreground font-body">
+                or
+              </span>
+              <Separator className="flex-1" />
+            </div>
+          </CardContent>
+
           <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 pt-0">
               <div className="space-y-2">
                 <Label htmlFor="email" className="font-body">
                   Email

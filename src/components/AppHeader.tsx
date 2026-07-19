@@ -79,21 +79,21 @@ export function AppHeader({ energy, compact = false }: AppHeaderProps) {
     );
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm">
+    <header className="relative z-50 border-b border-border bg-background/95 backdrop-blur-sm sm:sticky sm:top-0">
       <div
         className={cn(
-          "container mx-auto flex max-w-full items-center justify-between gap-2 px-4 sm:px-6 overflow-x-hidden",
-          compact ? "h-12 sm:h-14" : "h-14 sm:h-16",
+          "container mx-auto flex max-w-full items-center justify-between gap-1.5 px-3 overflow-x-hidden sm:gap-2 sm:px-6",
+          compact ? "h-10 sm:h-14" : "h-11 sm:h-16",
         )}
       >
-        <div className="flex min-w-0 items-center gap-2 sm:gap-4">
+        <div className="flex min-w-0 items-center gap-1.5 sm:gap-4">
           <Link to="/" className="flex shrink-0 items-center gap-2">
             <img
               src={moggLogo}
               alt="MOGG"
               className={cn(
                 "w-auto",
-                compact ? "h-8 sm:h-10 md:h-12" : "h-10 sm:h-12 md:h-14",
+                compact ? "h-7 sm:h-10 md:h-12" : "h-8 sm:h-12 md:h-14",
               )}
             />
           </Link>
@@ -108,20 +108,23 @@ export function AppHeader({ energy, compact = false }: AppHeaderProps) {
           </nav>
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-2 shrink-0">
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           <Button
             type="button"
             variant="ghost"
             size="icon"
             asChild
-            className="text-muted-foreground hover:text-foreground"
+            className="h-8 w-8 text-muted-foreground hover:text-foreground sm:h-10 sm:w-10"
           >
             <Link to="/feedback" aria-label="Feature board">
-              <Lightbulb className="h-4 w-4" />
+              <Lightbulb className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </Link>
           </Button>
 
-          <ArenaEnergyBadge energy={energy} />
+          <ArenaEnergyBadge
+            energy={energy}
+            className="gap-1 px-1.5 py-1 text-xs sm:gap-2 sm:px-2 sm:py-2 sm:text-meta"
+          />
 
           <Button
             type="button"
@@ -139,10 +142,10 @@ export function AppHeader({ energy, compact = false }: AppHeaderProps) {
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="sm:hidden text-foreground"
+                className="h-8 w-8 text-foreground sm:hidden"
                 aria-label="Open menu"
               >
-                <Menu className="h-5 w-5" />
+                <Menu className="h-4 w-4" />
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[min(100%,20rem)] bg-background border-border">

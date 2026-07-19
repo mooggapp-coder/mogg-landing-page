@@ -10,16 +10,30 @@ import {
   spendEnergyForExposure,
 } from "@/lib/arena-energy";
 import { track } from "@/lib/analytics";
+import {
+  PSL_FEEDBACK_COMMENT_MAX,
+  PSL_FEEDBACK_TAGS,
+  type PslFeedbackTag,
+} from "@/lib/psl-feedback";
 import { shareInvite } from "@/lib/share";
 import { AppHeader } from "@/components/AppHeader";
+import {
+  GenderPoolToggle,
+  type PslGenderMode,
+} from "@/components/GenderPoolToggle";
 import { PslRatingSlider } from "@/components/PslRatingSlider";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+
+type GenderValue = "male" | "female";
 
 type RateableUser = {
   user_id: string;
   username: string | null;
   name: string | null;
   photo_urls: string[] | null;
+  gender: string | null;
   country: string | null;
   age: number | null;
   height_cm: number | null;
@@ -65,6 +79,13 @@ function getPhotos(person: RateableUser): string[] {
     : [];
 }
 
+function normalizeGender(value: unknown): GenderValue | null {
+  if (typeof value !== "string") return null;
+  const normalized = value.trim().toLowerCase();
+  if (normalized === "male" || normalized === "female") return normalized;
+  return null;
+}
+
 function formatScoreDisplay(value: number): string {
   // Show 2 decimals when fractional (e.g. 7.25), else whole number (e.g. 8).
   if (Math.abs(value - Math.round(value)) < 1e-9) {
@@ -102,8 +123,19 @@ const Rate = () => {
   const [result, setResult] = useState<SubmitResult | null>(null);
   const [myScore, setMyScore] = useState<number | null>(null);
   const [arenaEnergy, setArenaEnergy] = useState<number | null>(null);
+  /** PSL gender mode — defaults to Random (combined pool). */
+  const [genderMode, setGenderMode] = useState<PslGenderMode>("random");
+  const [strongest, setStrongest] = useState<PslFeedbackTag | null>(null);
+  const [needsWork, setNeedsWork] = useState<PslFeedbackTag | null>(null);
+  const [feedbackNote, setFeedbackNote] = useState("");
 
   const loadInFlightRef = useRef(false);
+
+  const resetFeedback = () => {
+    setStrongest(null);
+    setNeedsWork(null);
+    setFeedbackNote("");
+  };
 
   const loadNextPerson = useCallback(async () => {
     if (!user?.id) return;
@@ -117,19 +149,28 @@ const Rate = () => {
     setScore(DEFAULT_SCORE);
     setResult(null);
     setMyScore(null);
+    resetFeedback();
 
     try {
+      let competitorsQuery = db
+        .from("users")
+        .select(
+          "user_id, username, name, photo_urls, gender, country, age, height_cm, weight_kg, arena_energy",
+        )
+        .eq("is_competitor", true)
+        .eq("is_competing", true)
+        .eq("is_blocked", false)
+        .gt("arena_energy", 0)
+        .not("photo_urls", "is", null)
+        .neq("user_id", user.id)
+        .limit(200);
+
+      if (genderMode === "male" || genderMode === "female") {
+        competitorsQuery = competitorsQuery.eq("gender", genderMode);
+      }
+
       const [competitorsRes, ratingsRes, blocksRes] = await Promise.all([
-        db
-          .from("users")
-          .select("user_id, username, name, photo_urls, country, age, height_cm, weight_kg, arena_energy")
-          .eq("is_competitor", true)
-          .eq("is_competing", true)
-          .eq("is_blocked", false)
-          .gt("arena_energy", 0)
-          .not("photo_urls", "is", null)
-          .neq("user_id", user.id)
-          .limit(200),
+        competitorsQuery,
         db.from("psl_ratings").select("rated_user_id").eq("rater_id", user.id),
         db.from("user_blocks").select("blocked_user_id").eq("blocker_id", user.id),
       ]);
@@ -152,6 +193,9 @@ const Rate = () => {
       const pool = ((competitorsRes.data as RateableUser[] | null) ?? []).filter((candidate) => {
         if (alreadyRated.has(candidate.user_id)) return false;
         if (blockedIds.has(candidate.user_id)) return false;
+        if (genderMode !== "random" && normalizeGender(candidate.gender) !== genderMode) {
+          return false;
+        }
         return getPhotos(candidate).length >= 1;
       });
 
@@ -176,11 +220,20 @@ const Rate = () => {
       setLoading(false);
       loadInFlightRef.current = false;
     }
-  }, [user?.id, toast]);
+  }, [user?.id, toast, genderMode]);
 
   useEffect(() => {
     void loadNextPerson();
   }, [loadNextPerson]);
+
+  const handleGenderModeChange = (next: PslGenderMode) => {
+    if (next === genderMode) return;
+    loadInFlightRef.current = false;
+    setPerson(null);
+    setEmptyPool(false);
+    setLoading(true);
+    setGenderMode(next);
+  };
 
   useEffect(() => {
     if (!user?.id) return;
@@ -205,8 +258,12 @@ const Rate = () => {
     setPhotoIndex((current) => (current + 1) % photos.length);
   };
 
+  const trimmedNote = feedbackNote.trim();
+  const noteNeedsTag = trimmedNote.length > 0 && !strongest && !needsWork;
+
   const handleSubmit = async () => {
     if (!user?.id || !person || submitting || result) return;
+    if (noteNeedsTag) return;
 
     setSubmitting(true);
     try {
@@ -222,6 +279,35 @@ const Rate = () => {
       setMyScore(score);
 
       track("psl_rating_submitted", { score });
+
+      if (strongest || needsWork) {
+        try {
+          const { error: feedbackError } = await db.from("psl_feedback").upsert(
+            {
+              author_id: user.id,
+              target_user_id: person.user_id,
+              strongest: strongest ?? null,
+              needs_work: needsWork ?? null,
+              comment: trimmedNote.length > 0 ? trimmedNote.slice(0, PSL_FEEDBACK_COMMENT_MAX) : null,
+            },
+            { onConflict: "author_id,target_user_id" },
+          );
+
+          if (feedbackError) throw feedbackError;
+
+          track("psl_feedback_given", {
+            strongest: strongest ?? null,
+            needs_work: needsWork ?? null,
+            has_note: trimmedNote.length > 0,
+          });
+        } catch (feedbackError) {
+          toast({
+            title: "Rating saved, but feedback failed",
+            description: getErrorMessage(feedbackError),
+            variant: "destructive",
+          });
+        }
+      }
 
       try {
         const nextEnergy = await grantEnergyForParticipation();
@@ -246,13 +332,22 @@ const Rate = () => {
   const metaLine = person ? formatCompetitorMeta(person) : null;
 
   return (
-    <main className="flex h-dvh flex-col overflow-hidden bg-background text-foreground">
+    <main className="flex min-h-dvh flex-col overflow-x-hidden bg-background text-foreground sm:h-dvh sm:overflow-hidden">
       <AppHeader energy={arenaEnergy} compact />
 
-      <div className="container mx-auto flex min-h-0 w-full max-w-md flex-1 flex-col overflow-hidden px-4 py-2 sm:px-6">
-        <div className="mb-2 shrink-0 text-center">
-          <p className="text-eyebrow mb-0">PSL</p>
-          <h1 className="text-section text-foreground">PSL Rating</h1>
+      <div className="container mx-auto flex min-h-0 w-full max-w-md flex-1 flex-col px-4 py-2 sm:overflow-hidden sm:px-6">
+        <div className="mb-2 flex shrink-0 items-start justify-between gap-2">
+          <div className="min-w-0 flex-1 text-left">
+            <p className="text-eyebrow mb-0">PSL</p>
+            <h1 className="text-section text-foreground">PSL Rating</h1>
+          </div>
+          <GenderPoolToggle
+            variant="psl"
+            value={genderMode}
+            onChange={handleGenderModeChange}
+            disabled={loading || submitting}
+            className="shrink-0"
+          />
         </div>
 
         {loading ? (
@@ -339,7 +434,7 @@ const Rate = () => {
                 </Button>
               </div>
             ) : (
-              <div className="flex min-h-0 flex-1 flex-col justify-between gap-2 overflow-hidden surface-card p-4 sm:gap-4 sm:p-6">
+              <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto surface-card p-4 sm:gap-4 sm:p-6">
                 <div className="shrink-0 text-center">
                   <p className="text-meta mb-2">Your PSL</p>
                   <p
@@ -350,7 +445,7 @@ const Rate = () => {
                   </p>
                 </div>
 
-                <div className="min-h-0 shrink">
+                <div className="shrink-0">
                   <PslRatingSlider
                     value={score}
                     onValueChange={setScore}
@@ -358,10 +453,86 @@ const Rate = () => {
                   />
                 </div>
 
+                <div className="space-y-3 border-t border-border pt-3">
+                  <div className="space-y-2">
+                    <p className="text-meta">Strongest feature</p>
+                    <div className="flex flex-wrap gap-2">
+                      {PSL_FEEDBACK_TAGS.map((tag) => {
+                        const active = strongest === tag;
+                        return (
+                          <button
+                            key={`strong-${tag}`}
+                            type="button"
+                            disabled={submitting}
+                            onClick={() => setStrongest(active ? null : tag)}
+                            className={cn(
+                              "rounded-full border px-3 py-1.5 text-xs font-semibold font-body transition-colors",
+                              active
+                                ? "border-primary bg-primary text-primary-foreground"
+                                : "border-border bg-secondary/50 text-muted-foreground hover:text-foreground",
+                            )}
+                          >
+                            {tag}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="text-meta">Needs work</p>
+                    <div className="flex flex-wrap gap-2">
+                      {PSL_FEEDBACK_TAGS.map((tag) => {
+                        const active = needsWork === tag;
+                        return (
+                          <button
+                            key={`needs-${tag}`}
+                            type="button"
+                            disabled={submitting}
+                            onClick={() => setNeedsWork(active ? null : tag)}
+                            className={cn(
+                              "rounded-full border px-3 py-1.5 text-xs font-semibold font-body transition-colors",
+                              active
+                                ? "border-border bg-foreground text-background"
+                                : "border-border bg-secondary/50 text-muted-foreground hover:text-foreground",
+                            )}
+                          >
+                            {tag}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-meta">Add a note (optional)</p>
+                      <p className="text-meta tabular-nums">
+                        {feedbackNote.length}/{PSL_FEEDBACK_COMMENT_MAX}
+                      </p>
+                    </div>
+                    <Textarea
+                      value={feedbackNote}
+                      onChange={(e) =>
+                        setFeedbackNote(e.target.value.slice(0, PSL_FEEDBACK_COMMENT_MAX))
+                      }
+                      disabled={submitting}
+                      maxLength={PSL_FEEDBACK_COMMENT_MAX}
+                      placeholder="Be specific and constructive — what would you actually change?"
+                      className="min-h-[88px] resize-none text-sm"
+                    />
+                    {noteNeedsTag && (
+                      <p className="text-xs font-body text-destructive">
+                        Pick a strongest or needs-work tag to leave a note.
+                      </p>
+                    )}
+                  </div>
+                </div>
+
                 <Button
                   type="button"
                   onClick={() => void handleSubmit()}
-                  disabled={submitting}
+                  disabled={submitting || noteNeedsTag}
                   className="w-full shrink-0 font-body"
                 >
                   {submitting ? (

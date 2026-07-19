@@ -13,10 +13,10 @@ import {
   type ProfileUser,
   type RankHistoryRow,
 } from "@/components/profile/ProfileCard";
+import { ProfileFeedbackSection } from "@/components/profile/ProfileFeedbackSection";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { cn } from "@/lib/utils";
 
 // App tables are not in the marketing Database types.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -161,6 +161,8 @@ const Profile = () => {
               showEnergyMeter
               rankHistory={rankHistory}
             />
+
+            {user?.id ? <ProfileFeedbackSection userId={user.id} /> : null}
 
             <Button
               type="button"

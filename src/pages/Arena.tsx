@@ -17,6 +17,10 @@ import {
 } from "@/lib/arena-energy";
 import { track } from "@/lib/analytics";
 import { AppHeader } from "@/components/AppHeader";
+import {
+  GenderPoolToggle,
+  type ArenaGenderMode,
+} from "@/components/GenderPoolToggle";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -190,13 +194,15 @@ const Arena = () => {
   const [moderationStep, setModerationStep] = useState<ModerationStep>("menu");
   const [moderationBusy, setModerationBusy] = useState(false);
   const [arenaEnergy, setArenaEnergy] = useState<number | null>(null);
+  /** Gender pool being viewed — defaults to the voter's own gender. */
+  const [viewGender, setViewGender] = useState<ArenaGenderMode | null>(null);
 
   const votingLockRef = useRef(false);
   const loadInFlightRef = useRef(false);
   const votedBattleIdsRef = useRef<Set<string>>(new Set());
   const nextBattleTimerRef = useRef<number | null>(null);
   const poolCacheRef = useRef<Competitor[] | null>(null);
-  const voterGenderRef = useRef<GenderValue | null>(null);
+  const poolCacheGenderRef = useRef<ArenaGenderMode | null>(null);
 
   const clearNextBattleTimer = () => {
     if (nextBattleTimerRef.current != null) {
@@ -205,20 +211,13 @@ const Arena = () => {
     }
   };
 
-  const loadBattle = useCallback(async () => {
+  // Default arena gender = viewer's own gender.
+  useEffect(() => {
     if (!user?.id) return;
-    if (loadInFlightRef.current) return;
-    loadInFlightRef.current = true;
+    let cancelled = false;
 
-    clearNextBattleTimer();
-    votingLockRef.current = false;
-    setVoting(false);
-    setWinnerId(null);
-    setLoading(true);
-    setEmptyPool(false);
-
-    try {
-      if (!voterGenderRef.current || !poolCacheRef.current) {
+    void (async () => {
+      try {
         const { data: me, error: meError } = await db
           .from("users")
           .select("user_id, gender")
@@ -231,8 +230,38 @@ const Arena = () => {
         if (!gender) {
           throw new Error("Your profile is missing a gender. Finish setup first.");
         }
-        voterGenderRef.current = gender;
+        if (!cancelled) setViewGender(gender);
+      } catch (error) {
+        if (!cancelled) {
+          toast({
+            title: "Could not load battle",
+            description: getErrorMessage(error),
+            variant: "destructive",
+          });
+          setLoading(false);
+        }
+      }
+    })();
 
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.id, toast]);
+
+  const loadBattle = useCallback(async () => {
+    if (!user?.id || !viewGender) return;
+    if (loadInFlightRef.current) return;
+    loadInFlightRef.current = true;
+
+    clearNextBattleTimer();
+    votingLockRef.current = false;
+    setVoting(false);
+    setWinnerId(null);
+    setLoading(true);
+    setEmptyPool(false);
+
+    try {
+      if (!poolCacheRef.current || poolCacheGenderRef.current !== viewGender) {
         const [competitorsRes, blocksRes] = await Promise.all([
           db
             .from("users")
@@ -243,6 +272,7 @@ const Arena = () => {
             .eq("is_competing", true)
             .eq("is_blocked", false)
             .eq("battle_consent", true)
+            .eq("gender", viewGender)
             .gt("arena_energy", 0)
             .neq("user_id", user.id)
             .limit(120),
@@ -260,11 +290,12 @@ const Arena = () => {
 
         const pool = ((competitorsRes.data as Competitor[] | null) ?? []).filter((competitor) => {
           if (blockedIds.has(competitor.user_id)) return false;
-          if (normalizeGender(competitor.gender) !== gender) return false;
+          if (normalizeGender(competitor.gender) !== viewGender) return false;
           return getPhotos(competitor).length >= 1;
         });
 
         poolCacheRef.current = pool;
+        poolCacheGenderRef.current = viewGender;
       }
 
       const pool = poolCacheRef.current ?? [];
@@ -326,14 +357,30 @@ const Arena = () => {
       setLoading(false);
       loadInFlightRef.current = false;
     }
-  }, [user?.id, toast]);
+  }, [user?.id, toast, viewGender]);
 
   useEffect(() => {
+    if (!viewGender) return;
     void loadBattle();
     return () => {
       clearNextBattleTimer();
     };
-  }, [loadBattle]);
+  }, [loadBattle, viewGender]);
+
+  const handleGenderChange = (next: ArenaGenderMode) => {
+    if (next === viewGender) return;
+    clearNextBattleTimer();
+    loadInFlightRef.current = false;
+    poolCacheRef.current = null;
+    poolCacheGenderRef.current = null;
+    setCompetitorA(null);
+    setCompetitorB(null);
+    setBattleId(null);
+    setWinnerId(null);
+    setEmptyPool(false);
+    setLoading(true);
+    setViewGender(next);
+  };
 
   useEffect(() => {
     if (!user?.id) return;
@@ -522,6 +569,7 @@ const Arena = () => {
       await blockUser(user.id, blockedId);
       // Clear pool cache so loadBattle re-fetches competitors + user_blocks.
       poolCacheRef.current = null;
+      poolCacheGenderRef.current = null;
 
       track("user_blocked");
       toast({
@@ -656,7 +704,17 @@ const Arena = () => {
       <AppHeader energy={arenaEnergy} compact />
 
       <div className="container mx-auto flex w-full max-w-4xl sm:max-w-6xl flex-1 flex-col px-6 py-2 sm:px-8 sm:py-4 min-h-0">
-        <div className="mb-0 shrink-0 text-center sm:mb-4">
+        <div className="relative mb-0 shrink-0 text-center sm:mb-4">
+          {viewGender && (
+            <div className="absolute right-0 top-0 z-10">
+              <GenderPoolToggle
+                variant="arena"
+                value={viewGender}
+                onChange={handleGenderChange}
+                disabled={loading}
+              />
+            </div>
+          )}
           <p className="hidden sm:block text-eyebrow mb-2">Arena</p>
           <h1 className="text-page-title text-primary leading-[0.85]">
             Who wins?

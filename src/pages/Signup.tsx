@@ -4,9 +4,11 @@ import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { track } from "@/lib/analytics";
 import { useToast } from "@/hooks/use-toast";
+import { OAuthProviderButtons } from "@/components/auth/OAuthProviderButtons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import {
   Card,
   CardContent,
@@ -131,85 +133,99 @@ const Signup = () => {
               </p>
             </CardContent>
           ) : (
-            <form onSubmit={handleSubmit}>
+            <>
               <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email" className="font-body">
-                    Email
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    autoComplete="email"
-                    inputMode="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="your@email.com"
-                    disabled={isSubmitting}
-                    required
-                    className="font-body"
-                  />
-                </div>
+                <OAuthProviderButtons disabled={isSubmitting} />
 
-                <div className="space-y-2">
-                  <Label htmlFor="password" className="font-body">
-                    Password
-                  </Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    autoComplete="new-password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="At least 6 characters"
-                    disabled={isSubmitting}
-                    required
-                    className="font-body"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="confirmPassword" className="font-body">
-                    Confirm password
-                  </Label>
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    autoComplete="new-password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Repeat your password"
-                    disabled={isSubmitting}
-                    required
-                    className="font-body"
-                  />
+                <div className="relative flex items-center gap-3 py-1">
+                  <Separator className="flex-1" />
+                  <span className="text-xs uppercase tracking-wide text-muted-foreground font-body">
+                    or
+                  </span>
+                  <Separator className="flex-1" />
                 </div>
               </CardContent>
 
-              <CardFooter className="flex flex-col gap-4">
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full"
-                >
-                  {isSubmitting ? (
-                    <>
-                      Creating account...
-                      <Loader2 className="ml-2 h-4 w-4 animate-spin" />
-                    </>
-                  ) : (
-                    "Create account"
-                  )}
-                </Button>
+              <form onSubmit={handleSubmit}>
+                <CardContent className="space-y-4 pt-0">
+                  <div className="space-y-2">
+                    <Label htmlFor="email" className="font-body">
+                      Email
+                    </Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      autoComplete="email"
+                      inputMode="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="your@email.com"
+                      disabled={isSubmitting}
+                      required
+                      className="font-body"
+                    />
+                  </div>
 
-                <p className="text-sm text-muted-foreground font-body text-center">
-                  Already have an account?{" "}
-                  <Link to="/login" className="text-primary hover:underline font-medium">
-                    Sign in
-                  </Link>
-                </p>
-              </CardFooter>
-            </form>
+                  <div className="space-y-2">
+                    <Label htmlFor="password" className="font-body">
+                      Password
+                    </Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      autoComplete="new-password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="At least 6 characters"
+                      disabled={isSubmitting}
+                      required
+                      className="font-body"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmPassword" className="font-body">
+                      Confirm password
+                    </Label>
+                    <Input
+                      id="confirmPassword"
+                      type="password"
+                      autoComplete="new-password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="Repeat your password"
+                      disabled={isSubmitting}
+                      required
+                      className="font-body"
+                    />
+                  </div>
+                </CardContent>
+
+                <CardFooter className="flex flex-col gap-4">
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        Creating account...
+                        <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                      </>
+                    ) : (
+                      "Create account"
+                    )}
+                  </Button>
+
+                  <p className="text-sm text-muted-foreground font-body text-center">
+                    Already have an account?{" "}
+                    <Link to="/login" className="text-primary hover:underline font-medium">
+                      Sign in
+                    </Link>
+                  </p>
+                </CardFooter>
+              </form>
+            </>
           )}
         </Card>
       </div>
