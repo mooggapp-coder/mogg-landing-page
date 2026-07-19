@@ -51,6 +51,20 @@ type Competitor = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const db = supabase as any;
 
+function formatCompetitorMeta(competitor: Pick<Competitor, "age" | "height_cm" | "weight_kg">): string | null {
+  const parts: string[] = [];
+  if (competitor.age != null && Number.isFinite(Number(competitor.age))) {
+    parts.push(String(Math.round(Number(competitor.age))));
+  }
+  if (competitor.height_cm != null && Number.isFinite(Number(competitor.height_cm))) {
+    parts.push(`${Math.round(Number(competitor.height_cm))} cm`);
+  }
+  if (competitor.weight_kg != null && Number.isFinite(Number(competitor.weight_kg))) {
+    parts.push(`${Math.round(Number(competitor.weight_kg))} kg`);
+  }
+  return parts.length > 0 ? parts.join(" · ") : null;
+}
+
 function getErrorMessage(error: unknown): string {
   if (error && typeof error === "object" && "message" in error) {
     const message = (error as { message: unknown }).message;
@@ -541,6 +555,7 @@ const Arena = () => {
     const isLoser = winnerId != null && winnerId !== competitor.user_id;
     const displayName = competitor.name?.trim() || competitor.username || "Competitor";
     const canVote = !voting && !winnerId;
+    const metaLine = formatCompetitorMeta(competitor);
 
     return (
       <div
@@ -621,6 +636,11 @@ const Arena = () => {
           <p className="truncate text-meta">
             {competitor.country || "Unknown country"}
           </p>
+          {metaLine && (
+            <p className="truncate text-meta leading-tight">
+              {metaLine}
+            </p>
+          )}
           {photos.length > 1 && (
             <p className="hidden sm:block text-meta">
               Tap photo to see more · Tap card to vote

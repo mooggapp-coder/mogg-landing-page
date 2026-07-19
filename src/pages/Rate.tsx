@@ -21,6 +21,9 @@ type RateableUser = {
   name: string | null;
   photo_urls: string[] | null;
   country: string | null;
+  age: number | null;
+  height_cm: number | null;
+  weight_kg: number | null;
 };
 
 type SubmitResult = {
@@ -31,6 +34,20 @@ type SubmitResult = {
 // App tables are not in the marketing Database types — cast for these queries.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const db = supabase as any;
+
+function formatCompetitorMeta(person: Pick<RateableUser, "age" | "height_cm" | "weight_kg">): string | null {
+  const parts: string[] = [];
+  if (person.age != null && Number.isFinite(Number(person.age))) {
+    parts.push(String(Math.round(Number(person.age))));
+  }
+  if (person.height_cm != null && Number.isFinite(Number(person.height_cm))) {
+    parts.push(`${Math.round(Number(person.height_cm))} cm`);
+  }
+  if (person.weight_kg != null && Number.isFinite(Number(person.weight_kg))) {
+    parts.push(`${Math.round(Number(person.weight_kg))} kg`);
+  }
+  return parts.length > 0 ? parts.join(" · ") : null;
+}
 
 function getErrorMessage(error: unknown): string {
   if (error && typeof error === "object" && "message" in error) {
@@ -105,7 +122,7 @@ const Rate = () => {
       const [competitorsRes, ratingsRes, blocksRes] = await Promise.all([
         db
           .from("users")
-          .select("user_id, username, name, photo_urls, country, arena_energy")
+          .select("user_id, username, name, photo_urls, country, age, height_cm, weight_kg, arena_energy")
           .eq("is_competitor", true)
           .eq("is_competing", true)
           .eq("is_blocked", false)
@@ -226,6 +243,7 @@ const Rate = () => {
   const photos = person ? getPhotos(person) : [];
   const displayName = person?.name?.trim() || person?.username || "Competitor";
   const currentPhoto = photos[photoIndex] ?? photos[0] ?? null;
+  const metaLine = person ? formatCompetitorMeta(person) : null;
 
   return (
     <main className="flex h-dvh flex-col overflow-hidden bg-background text-foreground">
@@ -292,6 +310,11 @@ const Rate = () => {
                 <p className="truncate text-meta">
                   {person.country || "Unknown country"}
                 </p>
+                {metaLine && (
+                  <p className="truncate text-meta leading-tight">
+                    {metaLine}
+                  </p>
+                )}
               </div>
             </div>
 
