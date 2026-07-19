@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { PostHogPageview } from "@/components/PostHogPageview";
+import { ReportBugButton } from "@/components/ReportBugButton";
 import Index from "./pages/Index.tsx";
 import About from "./pages/About";
 import Terms from "./pages/Terms";
@@ -108,6 +109,7 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <ReportBugButton />
           <Analytics />
         </AuthProvider>
       </BrowserRouter>

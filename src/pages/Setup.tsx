@@ -8,6 +8,7 @@ import { COUNTRIES, findCountryByCode, findCountryByName, type CountryOption } f
 import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -42,6 +43,8 @@ type UsersRow = {
   weight_kg: number | null;
   weight_lbs: number | null;
   photo_urls: string[] | null;
+  battle_consent: boolean | null;
+  consent_given_at: string | null;
 };
 
 type UsersClient = {
@@ -158,6 +161,9 @@ const Setup = () => {
 
   const [existingPhotoUrls, setExistingPhotoUrls] = useState<string[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [competitionConsent, setCompetitionConsent] = useState(false);
+  const [existingConsentGivenAt, setExistingConsentGivenAt] = useState<string | null>(null);
+  const [showConsentHint, setShowConsentHint] = useState(false);
 
   const previewUrls = useMemo(
     () => selectedFiles.map((file) => URL.createObjectURL(file)),
@@ -181,7 +187,7 @@ const Setup = () => {
         const { data, error } = await usersClient
           .from("users")
           .select(
-            "user_id, name, username, gender, date_of_birth, age, country, country_name, country_code, city, height_cm, height_ft, height_in, weight_kg, weight_lbs, photo_urls",
+            "user_id, name, username, gender, date_of_birth, age, country, country_name, country_code, city, height_cm, height_ft, height_in, weight_kg, weight_lbs, photo_urls, battle_consent, consent_given_at",
           )
           .eq("user_id", user.id)
           .maybeSingle();
@@ -222,6 +228,13 @@ const Setup = () => {
         setWeightUnit("kg");
         setWeightInput(data.weight_kg != null ? String(data.weight_kg) : "");
         setExistingPhotoUrls(Array.isArray(data.photo_urls) ? data.photo_urls : []);
+        setCompetitionConsent(data.battle_consent === true);
+        setExistingConsentGivenAt(
+          typeof data.consent_given_at === "string" && data.consent_given_at.trim()
+            ? data.consent_given_at
+            : null,
+        );
+        setShowConsentHint(false);
       } catch (error) {
         toast({
           title: "Could not load profile",
@@ -427,6 +440,16 @@ const Setup = () => {
       return;
     }
 
+    if (!competitionConsent) {
+      setShowConsentHint(true);
+      toast({
+        title: "Consent required",
+        description: "You need to agree before entering the arena.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const usingNewPhotos = selectedFiles.length > 0;
     const photoCount = usingNewPhotos ? selectedFiles.length : existingPhotoUrls.length;
     if (photoCount < MIN_PHOTOS) {
@@ -550,10 +573,14 @@ const Setup = () => {
         weight_kg: weightKg,
         photo_urls: photoUrls,
         photos_uploaded: true,
-        battle_consent: true,
-        is_competing: true,
+        battle_consent: competitionConsent,
+        is_competing: competitionConsent,
         last_active: new Date().toISOString(),
       };
+
+      if (competitionConsent && !existingConsentGivenAt) {
+        updatePayload.consent_given_at = new Date().toISOString();
+      }
 
       if (heightUnit === "ft") {
         updatePayload.height_ft = heightFt;
@@ -1002,25 +1029,78 @@ const Setup = () => {
             </div>
           </section>
 
-          <Button
-            type="submit"
-            disabled={
-              isSubmitting ||
-              usernameStatus === "checking" ||
-              usernameStatus === "taken" ||
-              usernameStatus === "invalid"
-            }
-            className="w-full"
-          >
-            {isSubmitting ? (
-              <>
-                Saving...
-                <Loader2 className="ml-2 h-4 w-4 animate-spin" />
-              </>
-            ) : (
-              "Save and continue"
+          {/* —— COMPETITION CONSENT —— */}
+          <section className="surface-card space-y-4 border-primary/40 p-4 shadow-primary-glow-sm sm:p-6">
+            <div>
+              <h2 className="text-section text-foreground">Enter the competition</h2>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <Checkbox
+                id="competition-consent"
+                checked={competitionConsent}
+                disabled={isSubmitting}
+                onCheckedChange={(checked) => {
+                  const next = checked === true;
+                  setCompetitionConsent(next);
+                  if (next) setShowConsentHint(false);
+                }}
+                className="mt-1"
+              />
+              <Label
+                htmlFor="competition-consent"
+                className="font-body text-sm leading-relaxed text-foreground cursor-pointer"
+              >
+                I agree to appear in{" "}
+                <a
+                  href="/terms"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline underline-offset-2 hover:text-primary/90"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  head-to-head competitions
+                </a>{" "}
+                and be rated by the community. I confirm these are photos of me and that I&apos;m 18
+                or older.
+              </Label>
+            </div>
+
+            <p className="text-meta">You can stop competing at any time from your profile.</p>
+
+            {showConsentHint && !competitionConsent && (
+              <p className="text-xs font-body text-destructive">
+                You need to agree before entering the arena.
+              </p>
             )}
-          </Button>
+          </section>
+
+          <div
+            onClick={() => {
+              if (!competitionConsent) setShowConsentHint(true);
+            }}
+          >
+            <Button
+              type="submit"
+              disabled={
+                isSubmitting ||
+                !competitionConsent ||
+                usernameStatus === "checking" ||
+                usernameStatus === "taken" ||
+                usernameStatus === "invalid"
+              }
+              className="w-full"
+            >
+              {isSubmitting ? (
+                <>
+                  Saving...
+                  <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                </>
+              ) : (
+                "Save and continue"
+              )}
+            </Button>
+          </div>
         </form>
       </div>
     </main>
